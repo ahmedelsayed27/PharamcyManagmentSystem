@@ -1,0 +1,229 @@
+﻿body {
+}
+th {
+    background-color: #3A597A;
+    color: white;
+    font-size: 14px;
+    padding-left: 5px;
+}
+/*td{
+    color:#CCFFCC;
+}*/
+table {
+    border-spacing:0;
+    border-collapse:collapse;
+}
+h2 {
+   color:#286090;
+}
+
+
+/*-----------------FOR SIDE BAR--------------------*/
+
+/*
+ *-----------------------------------------------------------------------------------
+ * === CSS DESIGN ===
+ *-----------------------------------------------------------------------------------
+ * author SOLUTII SOFT
+ */
+ 
+/* === HTML ELEMENTS === */
+	* { 
+		outline: none !important; 
+		border-radius: 0 !important;
+	}
+
+	body {
+		background: #F5F5F5;
+		background-image: url('../img/bg.png');
+		color: #222;
+		font-family: 'Dosis', arial;
+		line-height: 1;
+		padding-top: 50px;
+		padding-bottom: 40px;
+		text-rendering: optimizelegibility;
+		
+		height: auto;
+		min-height: 100%;
+		width: 100%;		
+	}
+
+	a:link,	
+    a:focus, 
+    a:visited , 
+    a:active,
+    a:hover { 
+		text-decoration: none; 
+	}
+
+	h1, 
+    h2, 
+    h3, 
+    h4 {
+		font-family: 'Dosis', arial;
+	}
+	small {
+        color: #000000 !important;
+    }
+    
+	label {
+		font-size: 16px;
+		font-weight: 400;
+	}	
+    
+    ul  {   
+        list-style: none;
+    }
+	
+	p  {
+        font-size: 16px;
+    }
+
+	textarea {
+        resize: none;
+    }
+
+	i {
+		margin-left: 5px;
+		margin-right: 5px;
+	}
+	
+	hr {
+		border-color: #999999;
+	}   
+        
+	main {
+		unicode-bidi: isolate; 
+		display: block; 
+		margin-bottom: 20px;    
+	}
+/* === END HTML ELEMENTS === */
+
+
+
+
+/* === NAVBAR === */
+	.navbar-default {
+		background-color: #444;
+		border-bottom: 0;
+		text-shadow: none;
+	}
+	.navbar-default ul.nav li.dropdown:hover > ul.dropdown-menu {
+		display: block;
+	}
+	.navbar-default .brand {
+		float: left;
+		width: 285px;
+	}
+	.navbar-default .navbar-brand span {
+		background: #CC0000;
+		color: #FFF;
+		padding: 6px 10px;
+		margin-left: -4px;
+	}
+	.navbar-default i {
+		color: #FFFFFF;
+	}
+	.navbar-default .toogle {
+		cursor: pointer;
+		font-size: 16px;
+		height: 50px;
+		line-height: 20px;
+		padding: 15px;
+	}	
+/* === END NAVBAR === */
+	
+	
+/* === SIDEBAR === */
+	.body {
+		position: relative;
+		margin: 0;
+		padding: 0;
+		transition: margin-left 0.5s;
+		-o-transition: margin-left 0.5s;
+		-moz-transition: margin-left 0.5s;
+		-webkit-transition: margin-left 0.5s;
+	}
+	.body.slide {
+		margin-left: 300px;
+	}
+	.sidebar {
+		background-color: #6595BC;
+		width:300px;
+		height: 100%;
+		padding: 0px; 
+		position: fixed;
+		left: -300px;
+		right: auto;
+		top: 50px;
+		z-index: 1;
+		transition: left 0.5s;
+		-o-transition: left 0.5s;
+		-moz-transition: left 0.5s;
+		-webkit-transition: left 0.5s;
+		overflow-y: hidden;
+	}
+	.sidebar.show {
+		left: 0;
+		display: block;
+	}
+	.ps-scrollbar-y-rail {
+	  margin: 5px 0;
+	}	
+/* === END SIDEBAR === */
+
+
+/* === SIDEBAR MENU === */
+	.panel {
+		border: 0;
+		box-shadow: none;
+	}
+	
+	.panel-default > .panel-heading {
+		background-color: #6595BC;
+	}
+	.panel-default > .panel-heading:hover {
+		background-color: #5B86A9;
+	}
+	.panel-default > .panel-heading  a {
+		color: #FFF;
+		display: block;
+		padding: 8px 0px;
+	}
+	
+	.list-group-item {
+		padding-left: 25px;
+		border: 0;
+		background: #286090;
+	}
+	.list-group-item:hover {
+		background: #365167;
+        padding-left: 15px;
+		transition-delay: 0s;
+        transition-duration: 0.3s;
+        transition-property: all;
+        transition-timing-function: linear;	
+	}
+	a.list-group-item {
+		color: #FFF;
+	}
+	a.list-group-item:hover {
+		background: #5881A2;
+		color: #FFF;
+	}	
+	
+	.solso-active {
+		background: #385269 !important;
+	}
+	
+	.list-group-item.no-border {
+		border: 0;
+	}	
+	
+	.panel-group .panel + .panel {
+		margin-top: 0px;
+	}	
+/* === END SIDEBAR MENU === */
+
+
+

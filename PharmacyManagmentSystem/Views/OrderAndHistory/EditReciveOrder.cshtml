@@ -1,0 +1,98 @@
+﻿    @model PharmacyManagmentSystem.DAL.OrderReciveStructure
+    @{
+        ViewBag.Title = "EditReciveOrder";
+    }
+
+    <h2>Edit Recive Order Item</h2>
+    @using (Html.BeginForm())
+    {
+        
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <br />
+         @Html.ActionLink("Back To order", "ReciveOrder/" + this.Session["OrderID"].ToString())
+          
+        <table id="OrderDisplayTable" style="background-color:white; color:black">
+        <tr style="background-color:lightgray; font-size:xx-large" >
+            <td>@Html.Label("Category")</td>
+            <td>@Html.Label("Product Name")</td>
+            <td>@Html.Label("Product Size")</td>
+            <td>@Html.Label("Supplier Name")</td>
+            <td>@Html.Label("Qantity Ordered")</td>
+        </tr>
+        <tr style="background-color: white; font-size:x-large">
+            <td>@Html.DisplayFor(model => model.CategoryName)@Html.HiddenFor(model => model.CategoryName)</td>
+            <td>@Html.DisplayFor(model => model.ProductName1)@Html.HiddenFor(model => model.ProductName1)</td>
+            <td>@Html.DisplayFor(model => model.Size)@Html.HiddenFor(model => model.Size)</td>
+            <td>@Html.DisplayFor(model => model.SupplierName)@Html.HiddenFor(model => model.SupplierName)</td>
+            <td>@Html.DisplayFor(model => model.QuantityOrderd )@Html.HiddenFor(model => model.QuantityOrderd)</td>
+        </tr>
+        <tr style="background-color:lightgray; font-size:xx-large">
+            <td>@Html.Label("Reciving Date (mm-dd-yyyy)")</td>
+            <td>@Html.Label("Price")</td>
+            <td>@Html.Label("Pack Size")</td>
+            <td>@Html.Label("Discount %")</td>
+            <td>@Html.Label("Quantity Recived")</td>
+        </tr>
+        <tr style="background-color: white; font-size:large">
+            <td>@Html.EditorFor(model => model.OrderRecivingDate)</td>
+            <td>@Html.EditorFor(model => model.PricePrItem) </td>
+            <td>@Html.EditorFor(model => model.PackSize)</td>
+            <td>@Html.EditorFor(model => model.DiscountPercentage) </td>
+            <td>@Html.EditorFor(model => model.QuantityRecived) </td>
+        </tr>
+        <tr>
+            <td> </td>            
+            <td>@Html.RadioButton("Price", "Pr Pack", true) Pr Pack @Html.RadioButton("Price", "Pr Item", false) Pr Item </td>
+            <td></td>
+            <td>@Html.HiddenFor(model => model.StockId) </td>
+            <td>@Html.HiddenFor(model => model.OrderDetailID)  </td>
+        </tr>
+        <tr style="background-color:lightgray; font-size:xx-large">
+            <td>@Html.Label("Batch No")</td>
+            <td>@Html.Label("Selling Price Pr Item")</td>
+            <td>@Html.Label("Expirey Date (mm-dd-yyyy)")</td>
+            <td>@Html.Label("Item Sold")</td>
+            <td>@Html.Label("Quantity Accepted")</td>
+        </tr>
+        <tr style="background-color: white; font-size:large">
+            <td>@Html.EditorFor(model => model.BatchNO)</td>
+            <td>@Html.EditorFor(model => model.SellingPricePrItem) </td>
+            <td>@Html.EditorFor(model => model.ExpiryDate)</td>
+            <td>@Html.EditorFor(model => model.ItemSold) </td>
+            <td>@Html.EditorFor(model => model.QuantityAcepted) </td>
+        </tr>
+        <tr style="background-color: lightgray; font-size: large">
+            <td></td>
+            <td>@Html.Label("Alert Before Expire (Days)")</td>
+            <td>@Html.EditorFor(model => model.ExpireDays) </td>
+        </tr>    
+           
+    </table>
+       <br />
+       
+        <input type="submit" value="Save Changes" class="btn btn-default" />
+        if(ViewData.ContainsKey("Error"))
+        {
+            <label id="errorlable" style="color:#c67a7a; font-weight:bold"> @ViewData["Error"].ToString()</label> 
+        }       
+    }
+
+
+
+
+
+
+    <script src="/Scripts/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="/Scripts/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                $('.datepicker').datepicker({
+                    format: 'mm-dd-yyyy'
+                });
+            });
+        });
+
+    </script>

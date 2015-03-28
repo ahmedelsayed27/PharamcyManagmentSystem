@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "Sales";
+}
+
+<h2>Sales</h2>
+@using (Html.BeginForm())
+{
+    WebGrid grid = new WebGrid(Model);
+    <center>
+        <div style="border:double thick;width: 50% ;" class="alert-success">
+            @try
+            {
+                @Html.Label("User Name =   ", new { @class = "alert-danger" })
+                @Html.Label(Session["UserName"].ToString(), new { @class = "alert-danger" })
+            }
+            catch
+            {
+                Response.Redirect("/Account/SignIn");
+            }
+            <br />
+            @Html.Label("   Date =   ", new { @class = "alert-danger" })
+            @Html.Label(DateTime.Now.ToShortDateString(), new { @class = "alert-danger" })
+        </div>
+    </center>
+        <hr />
+        <div id="SelectProduct" style="border:thick; width:80%" class="form-group" >
+            <div>
+                <ul>
+                    <li>Search Product <input id="productSelectionTxt" type="text" oninput="SearchForProduct()" /></li>
+                    <li>@Html.ListBox("productSelection", new SelectList(string.Empty, "Value", "Text"), new { style = "width:250px", @class = "dropdown-toggle", Multiple = "multiple" })</li>
+                    <li> Avalible items are :&nbsp;  <label id="ErrorLblProduct" class="alert-danger">  </label></li>
+                </ul>
+
+            </div>
+        </div>
+
+    
+        <div style=" width: 80%;" class=" body-content">
+            <table style="width: 100%; height:100%" class=" form-control form-inline">
+                <tr style="height:80%">
+                    <td width="20%">@Html.Label("Quantity : ")</td>
+                    <td width="20%"><input type="number" id="QuantityRequired"  min="0" oninput="GenrateAmount()" /></td>  
+                    <td width="20%"> <label id="quntitylbl" class=" alert-danger"></label></td>
+                    <td width="20%">@Html.Label("Date : ")</td>
+                    <td width="20%">@Html.Label(DateTime.Now.Date.ToShortDateString())</td>
+                </tr>
+                <tr class="col-lg-offset-3">
+                    <td width="20%">@Html.Label("Price Pr Item : ") </td>
+                    <td width="20%"><label id="pricePrItem">0</label></td>  @*<td width="20%"><input type="number" id="pricePrItem" readonly="readonly" /></td>*@
+                    <td width="20%"></td>
+                    <td width="20%">@Html.Label("Amount: ")</td>
+                    <td width="20%"><label id="amount">0</label></td> @*<td width="20%"> <input type="number" id="amount" readonly="readonly" /></td>*@
+                </tr>
+                <tr>
+                    <td width="20%">@Html.Label("Discount % : ") </td>
+                    <td width="20%"><input type="number" id="discount" step="any" min="0" oninput="GenrateNetAmount()" /></td>
+                    <td width="20%"> <label id="discountlbl" class=" alert-danger"></label></td>
+                    <td width="20%">@Html.Label("Net Amount: ") </td>
+                    <td width="20%"><label id="netAmount">0</label></td>
+                </tr>
+            </table>
+           
+        </div>
+    <center>
+        <br />
+       <div class="btn-group-sm" > 
+           <button class="btn btn-primary ">Add Another Item </button>
+           <button class="btn btn-default "> ........Bill.......</button>
+           <button class="btn btn-primary ">Save As Draft </button>
+           <button class="btn btn-default "> Cancel</button>
+       </div>
+    
+        <br />
+    </center>
+    
+       
+    <div>
+        @grid.GetHtml(
+                tableStyle: "table table-striped table-bordered table-condensed",
+                headerStyle: "header",
+                columns: grid.Columns(
+                 grid.Column("Product"),
+                 grid.Column("Quantity"),
+                 grid.Column("UnitPrice"),
+                 grid.Column("Amount"),
+                 grid.Column("Discount"),
+                 grid.Column("NetAmount"),               
+                 grid.Column(header: "Delete", format: @<a class="btn btn-info" href="~/OrderAndHistory/EditReciveOrder?id=@item.SalesId">Delete</a>)
+         ), mode: WebGridPagerModes.Numeric)
+
+    </div>
+}
+
+<script src="/Scripts/jquery-1.10.2.js" type="text/javascript"></script>
+<script src="/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    function SearchForProduct()
+    {
+        if ($('#productSelectionTxt').val().length > 2) {
+            $.ajax({
+                type: 'POST', url: '@Url.Action("SearchProducts")', dataType: 'json',
+                data: { SearchKey: $("#productSelectionTxt").val() },
+                success: function (itemz) {
+                    $("#productSelection").empty();
+                    $.each(itemz, function (i, item) {
+                        $("#productSelection").append('<option value="' + item.Value + '">' + item.Text + '</option>');                        
+                    });
+                },
+                error: function (ex) { document.getElementById("ErrorLblProduct").innerHTML = "Error here"; }
+            });                         
+        }
+    }
+
+    $("#productSelection").change(function () {
+        document.getElementById("ErrorLblProduct").innerHTML = " ";
+        document.getElementById("pricePrItem").innerHTML = "0";
+        document.getElementById("amount").innerHTML = "0";
+        $.ajax({
+            type: 'POST', url: '@Url.Action("GetAvalibleProducts")', dataType: 'json',data: { ProductDetailID: $('#productSelection :selected').val() },
+            success: function (itemz) {                               
+                if (itemz.Count<1 || itemz == null) {
+                    document.getElementById("ErrorLblProduct").innerHTML = "Out Of Stock from If";
+                }
+                else {
+                    document.getElementById("ErrorLblProduct").innerHTML = itemz.Count;
+                    document.getElementById("pricePrItem").innerHTML = itemz.Price;
+                   
+                    $('#QuantityRequired').val() = itemz.Price;
+                }
+               },
+            error: function (ex) { document.getElementById("ErrorLblProduct").innerHTML = "Out Of Stock on Error"; }
+        });
+    });
+
+    function GenrateAmount()
+    {
+        document.getElementById("discountlbl").innerHTML = "";
+        document.getElementById("quntitylbl").innerHTML = "";                
+            var quntity = $('#QuantityRequired').val();
+            var price = $('#pricePrItem').text();
+            var avalible = $('#ErrorLblProduct').text();
+           if (parseInt(quntity, 10)<= parseInt(avalible, 10))
+            {
+            var value = price * quntity;
+            document.getElementById("amount").innerHTML = value;
+            document.getElementById("netAmount").innerHTML = value;
+
+            }
+        else {
+            document.getElementById("amount").innerHTML = "";
+            document.getElementById("quntitylbl").innerHTML = "Should be less then Avalible Items";
+             }           
+    }
+
+    function GenrateNetAmount() {
+        document.getElementById("discountlbl").innerHTML = "";
+        var discount = $('#discount').val();
+        var amount = $('#amount').text();
+        if (parseInt(discount, 10) <= 100) {
+            var discountValue = amount-(( amount * discount)/100);
+            document.getElementById("netAmount").innerHTML = discountValue;
+             }
+        else {
+            document.getElementById("discountlbl").innerHTML = "should be less then 100%";
+             }
+    }
+
+</script>

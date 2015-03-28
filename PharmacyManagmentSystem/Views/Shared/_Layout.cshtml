@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Pharmacy Managment System", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+
+    <div class="body slide">
+        <aside class="sidebar show perfectScrollbar" style=" width:12%">
+            <div id="solso-sidebar">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading1">
+                                <h4 class="panel-title">
+                                    <a href="index.php" class="single-item">
+                                        <i class="fa fa-dashboard"></i> Dashboard
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading2">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                    <i class="fa fa-bar-chart-o"></i> Charts
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapse2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2">
+                            <div>
+                                <a href="bar-chart.php" class="list-group-item">bar Chart</a>
+                                <a href="pie-chart.php" class="list-group-item">pie Chart</a>
+                                <a href="google-chart.php" class="list-group-item">google Chart</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading3">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                    <i class="fa fa-table"></i> Tables
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapse3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading3">
+                            <div>
+                                <a href="simple-tables.php" class="list-group-item">Simple Tables</a>
+                                <a href="data-tables.php" class="list-group-item">Data Tables</a>
+                                <a href="beauty-tables.php" class="list-group-item">Beauty Tables</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading4">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                                    <i class="fa fa-edit"></i> Forms
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapse4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading4">
+                            <div>
+                                <a href="form-1.php" class="list-group-item">Form 1</a>
+                                <a href="form-2.php" class="list-group-item">Form 2</a>
+                                <a href="form-3.php" class="list-group-item">Form 3</a>
+                                <a href="form-4.php" class="list-group-item">Form 4</a>
+                                <a href="form-5.php" class="list-group-item">Form 5</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading5">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                                    <i class="fa fa-desktop"></i> UI Elements
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapse5" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading5">
+                            <div>
+                                <a href="element-1.php" class="list-group-item">Element 1</a>
+                                <a href="element-2.php" class="list-group-item">Element 2</a>
+                                <a href="element-3.php" class="list-group-item">Element 3</a>
+                                <a href="element-4.php" class="list-group-item">Element 4</a>
+                                <a href="element-5.php" class="list-group-item">Element 5</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading6">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse6" aria-expanded="true" aria-controls="collapse6">
+                                    <i class="fa fa-file"></i> Pages
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapse6" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading6">
+                            <div>
+                                <a href="page-1.php" class="list-group-item">Page 1</a>
+                                <a href="page-2.php" class="list-group-item">Page 2</a>
+                                <a href="page-3.php" class="list-group-item">Page 3</a>
+                                <a href="page-4.php" class="list-group-item">Page 4</a>
+                                <a href="page-5.php" class="list-group-item">Page 5</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading7">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                    <i class="fa fa-picture-o"></i> Gallery
+                                    <i class="pull-right fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapse7" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading7">
+                            <div>
+                                <a href="gallery-1.php" class="list-group-item">Gallery 1</a>
+                                <a href="gallery-2.php" class="list-group-item">Gallery 2</a>
+                                <a href="gallery-3.php" class="list-group-item">Gallery 3</a>
+                                <a href="gallery-4.php" class="list-group-item">Gallery 4</a>
+                                <a href="gallery-5.php" class="list-group-item">Gallery 5</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+
+      @*  <div class="col-lg-offset-0 container body-content" style="width:auto">*@
+        <div style="align-content:inherit">
+            @RenderBody()
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+           
+</body>
+</html>
