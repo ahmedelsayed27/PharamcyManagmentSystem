@@ -12,7 +12,10 @@
             @try
             {
                 @Html.Label("User Name =   ", new { @class = "alert-danger" })
-                @Html.Label(Session["UserName"].ToString(), new { @class = "alert-danger" })
+                @Html.Label(this.Session["UserName"].ToString(), new { @class = "alert-danger" })
+                <br />
+                @Html.Label("Sales ID = ", new { @class = "alert-danger" })
+                @Html.Label(this.Session["SalesID"].ToString(), new { @class = "alert-danger" })                
             }
             catch
             {
@@ -60,15 +63,15 @@
                     <td width="20%"><label id="netAmount">0</label></td>
                 </tr>
             </table>
-           
+            <label id="ErroLbl" class="label-danger">Error</label>
         </div>
     <center>
         <br />
        <div class="btn-group-sm" > 
-           <button class="btn btn-primary ">Add Another Item </button>
-           <button class="btn btn-default "> ........Bill.......</button>
-           <button class="btn btn-primary ">Save As Draft </button>
-           <button class="btn btn-default "> Cancel</button>
+           <button class="btn btn-primary " onclick="SaveSalesItem()">....ADD  ITEM.... </button>
+           <button class="btn btn-default "> ........BILL.......</button>
+           <button class="btn btn-primary ">....NEW SALE.... </button>
+           <button class="btn btn-default "> .....CANCEL.....</button>
        </div>
     
         <br />
@@ -86,8 +89,8 @@
                  grid.Column("Amount"),
                  grid.Column("Discount"),
                  grid.Column("NetAmount"),               
-                 grid.Column(header: "Delete", format: @<a class="btn btn-info" href="~/OrderAndHistory/EditReciveOrder?id=@item.SalesId">Delete</a>)
-         ), mode: WebGridPagerModes.Numeric)
+                 grid.Column(header: "Delete", format: @<a class="btn btn-info" href="~/Sales/DeletSalesItem?id=@item.soldItemId">Delete</a>)
+          ), mode: WebGridPagerModes.Numeric)
 
     </div>
 }
@@ -166,4 +169,20 @@
              }
     }
 
+    function SaveSalesItem()
+    {
+        $.ajax({
+            type: 'POST', url: '@Url.Action("SaveSoldItem")', dataType: 'json',
+            data: { quantity: $('#QuantityRequired').val(), amount: $('#amount').text(), discount: $('#discount').val(), netAmount: $('#netAmount').text(), proDetID: $('#productSelection :selected').val() },
+            success: function (returnmessage) {
+                if (returnmessage == "ok") {
+                    document.getElementById("ErroLbl").innerHTML = "added";
+                }
+                else {
+                    document.getElementById("ErroLbl").innerHTML = " else not added";
+                }                
+            },
+            error: function (ex) { document.getElementById("ErroLbl").innerHTML = "not added"; }
+        });
+    }
 </script>

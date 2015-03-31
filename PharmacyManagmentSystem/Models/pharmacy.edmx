@@ -168,7 +168,10 @@
           <Property Name="salesId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="date" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="empId" Type="int" Nullable="false" />
-          <Property Name="netAmount" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="netAmount" Type="double" />
+          <Property Name="salesStatus" Type="varchar" MaxLength="45" />
+          <Property Name="overallDiscounPercentage" Type="int" />
+          <Property Name="netAmountAfterOD" Type="double" />
         </EntityType>
         <EntityType Name="solditems">
           <Key>
@@ -179,6 +182,14 @@
           <Property Name="amount" Type="double" />
           <Property Name="discount" Type="double" />
           <Property Name="salesId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="soldstock">
+          <Key>
+            <PropertyRef Name="soldStokId" />
+          </Key>
+          <Property Name="soldStokId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="stockId" Type="int" Nullable="false" />
+          <Property Name="soldItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="stock">
           <Key>
@@ -192,14 +203,6 @@
           <Property Name="batchNO" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="expiryDate" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="expireDays" Type="int" />
-        </EntityType>
-        <EntityType Name="stocksales">
-          <Key>
-            <PropertyRef Name="stockSalesID" />
-          </Key>
-          <Property Name="stockSalesID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="stockId" Type="int" Nullable="false" />
-          <Property Name="salesId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="supplier">
           <Key>
@@ -472,26 +475,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_StockSales_Sales1">
-          <End Role="sales" Type="Self.sales" Multiplicity="1" />
-          <End Role="stocksales" Type="Self.stocksales" Multiplicity="*" />
+        <Association Name="fk_table1_SoldItems1">
+          <End Role="solditems" Type="Self.solditems" Multiplicity="1" />
+          <End Role="soldstock" Type="Self.soldstock" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="sales">
-              <PropertyRef Name="salesId" />
+            <Principal Role="solditems">
+              <PropertyRef Name="soldItemId" />
             </Principal>
-            <Dependent Role="stocksales">
-              <PropertyRef Name="salesId" />
+            <Dependent Role="soldstock">
+              <PropertyRef Name="soldItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_StockSales_Stock1">
+        <Association Name="fk_table1_Stock1">
           <End Role="stock" Type="Self.stock" Multiplicity="1" />
-          <End Role="stocksales" Type="Self.stocksales" Multiplicity="*" />
+          <End Role="soldstock" Type="Self.soldstock" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="stock">
               <PropertyRef Name="stockId" />
             </Principal>
-            <Dependent Role="stocksales">
+            <Dependent Role="soldstock">
               <PropertyRef Name="stockId" />
             </Dependent>
           </ReferentialConstraint>
@@ -527,8 +530,8 @@
           <EntitySet Name="productsupplied" EntityType="Self.productsupplied" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="sales" EntityType="Self.sales" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="solditems" EntityType="Self.solditems" Schema="pharmacy" store:Type="Tables" />
+          <EntitySet Name="soldstock" EntityType="Self.soldstock" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="stock" EntityType="Self.stock" Schema="pharmacy" store:Type="Tables" />
-          <EntitySet Name="stocksales" EntityType="Self.stocksales" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="supplier" EntityType="Self.supplier" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="pharmacy" store:Type="Tables" />
           <AssociationSet Name="fk_BorrowLendStock_BorrowLend1" Association="Self.fk_BorrowLendStock_BorrowLend1">
@@ -615,13 +618,13 @@
             <End Role="orderdetail" EntitySet="orderdetail" />
             <End Role="stock" EntitySet="stock" />
           </AssociationSet>
-          <AssociationSet Name="fk_StockSales_Sales1" Association="Self.fk_StockSales_Sales1">
-            <End Role="sales" EntitySet="sales" />
-            <End Role="stocksales" EntitySet="stocksales" />
+          <AssociationSet Name="fk_table1_SoldItems1" Association="Self.fk_table1_SoldItems1">
+            <End Role="solditems" EntitySet="solditems" />
+            <End Role="soldstock" EntitySet="soldstock" />
           </AssociationSet>
-          <AssociationSet Name="fk_StockSales_Stock1" Association="Self.fk_StockSales_Stock1">
+          <AssociationSet Name="fk_table1_Stock1" Association="Self.fk_table1_Stock1">
             <End Role="stock" EntitySet="stock" />
-            <End Role="stocksales" EntitySet="stocksales" />
+            <End Role="soldstock" EntitySet="soldstock" />
           </AssociationSet>
           <AssociationSet Name="fk_Users_Authorities1" Association="Self.fk_Users_Authorities1">
             <End Role="authorities" EntitySet="authorities" />
@@ -819,10 +822,12 @@
           <Property Name="salesId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="date" Type="DateTime" Nullable="false" />
           <Property Name="empId" Type="Int32" Nullable="false" />
-          <Property Name="netAmount" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="netAmount" Type="Double" Nullable="false" />
           <NavigationProperty Name="employee" Relationship="Self.fk_Sales_Employee1" FromRole="sales" ToRole="employee" />
           <NavigationProperty Name="solditems" Relationship="Self.fk_SoldItems_Sales1" FromRole="sales" ToRole="solditems" />
-          <NavigationProperty Name="stocksales" Relationship="Self.fk_StockSales_Sales1" FromRole="sales" ToRole="stocksales" />
+          <Property Name="salesStatus" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="overallDiscounPercentage" Type="Int32" />
+          <Property Name="netAmountAfterOD" Type="Double" />
         </EntityType>
         <EntityType Name="solditem">
           <Key>
@@ -834,6 +839,7 @@
           <Property Name="discount" Type="Double" />
           <Property Name="salesId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="sale" Relationship="Self.fk_SoldItems_Sales1" FromRole="solditems" ToRole="sales" />
+          <NavigationProperty Name="soldstocks" Relationship="pharmacyModel.fk_table1_SoldItems1" FromRole="solditem" ToRole="soldstock" />
         </EntityType>
         <EntityType Name="stock">
           <Key>
@@ -847,20 +853,10 @@
           <NavigationProperty Name="borrowlendstocks" Relationship="Self.fk_BorrowLendStock_Stock1" FromRole="stock" ToRole="borrowlendstock" />
           <NavigationProperty Name="employerstocks" Relationship="Self.fk_EmployerStock_Stock1" FromRole="stock" ToRole="employerstock" />
           <NavigationProperty Name="orderdetail" Relationship="Self.fk_Stock_OrderDetails1" FromRole="stock" ToRole="orderdetail" />
-          <NavigationProperty Name="stocksales" Relationship="Self.fk_StockSales_Stock1" FromRole="stock" ToRole="stocksales" />
           <Property Name="sellingPricePrItem" Type="Double" Nullable="false" />
           <Property Name="itemSold" Type="Int32" />
           <Property Name="expireDays" Type="Int32" />
-        </EntityType>
-        <EntityType Name="stocksale">
-          <Key>
-            <PropertyRef Name="stockSalesID" />
-          </Key>
-          <Property Name="stockSalesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="stockId" Type="Int32" Nullable="false" />
-          <Property Name="salesId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="sale" Relationship="Self.fk_StockSales_Sales1" FromRole="stocksales" ToRole="sales" />
-          <NavigationProperty Name="stock" Relationship="Self.fk_StockSales_Stock1" FromRole="stocksales" ToRole="stock" />
+          <NavigationProperty Name="soldstocks" Relationship="pharmacyModel.fk_table1_Stock1" FromRole="stock" ToRole="soldstock" />
         </EntityType>
         <EntityType Name="supplier">
           <Key>
@@ -1112,30 +1108,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_StockSales_Sales1">
-          <End Role="sales" Type="Self.sale" Multiplicity="1" />
-          <End Role="stocksales" Type="Self.stocksale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="sales">
-              <PropertyRef Name="salesId" />
-            </Principal>
-            <Dependent Role="stocksales">
-              <PropertyRef Name="salesId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_StockSales_Stock1">
-          <End Role="stock" Type="Self.stock" Multiplicity="1" />
-          <End Role="stocksales" Type="Self.stocksale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="stock">
-              <PropertyRef Name="stockId" />
-            </Principal>
-            <Dependent Role="stocksales">
-              <PropertyRef Name="stockId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="pharmacyEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="authorities" EntityType="Self.authority" />
           <EntitySet Name="borrowlends" EntityType="Self.borrowlend" />
@@ -1155,7 +1127,6 @@
           <EntitySet Name="sales" EntityType="Self.sale" />
           <EntitySet Name="solditems" EntityType="Self.solditem" />
           <EntitySet Name="stocks" EntityType="Self.stock" />
-          <EntitySet Name="stocksales" EntityType="Self.stocksale" />
           <EntitySet Name="suppliers" EntityType="Self.supplier" />
           <EntitySet Name="users" EntityType="Self.user" />
           <AssociationSet Name="fk_BorrowLendStock_BorrowLend1" Association="Self.fk_BorrowLendStock_BorrowLend1">
@@ -1234,14 +1205,6 @@
             <End Role="sales" EntitySet="sales" />
             <End Role="solditems" EntitySet="solditems" />
           </AssociationSet>
-          <AssociationSet Name="fk_StockSales_Sales1" Association="Self.fk_StockSales_Sales1">
-            <End Role="sales" EntitySet="sales" />
-            <End Role="stocksales" EntitySet="stocksales" />
-          </AssociationSet>
-          <AssociationSet Name="fk_StockSales_Stock1" Association="Self.fk_StockSales_Stock1">
-            <End Role="stock" EntitySet="stocks" />
-            <End Role="stocksales" EntitySet="stocksales" />
-          </AssociationSet>
           <AssociationSet Name="fk_OrderDetail_Order1" Association="pharmacyModel.fk_OrderDetail_Order1">
             <End Role="order" EntitySet="orders" />
             <End Role="orderdetail" EntitySet="orderdetails" />
@@ -1254,6 +1217,15 @@
           <AssociationSet Name="fk_Users_Authorities1" Association="pharmacyModel.fk_Users_Authorities1">
             <End Role="authority" EntitySet="authorities" />
             <End Role="user" EntitySet="users" />
+          </AssociationSet>
+          <EntitySet Name="soldstocks" EntityType="pharmacyModel.soldstock" />
+          <AssociationSet Name="fk_table1_SoldItems1" Association="pharmacyModel.fk_table1_SoldItems1">
+            <End Role="solditem" EntitySet="solditems" />
+            <End Role="soldstock" EntitySet="soldstocks" />
+          </AssociationSet>
+          <AssociationSet Name="fk_table1_Stock1" Association="pharmacyModel.fk_table1_Stock1">
+            <End Role="stock" EntitySet="stocks" />
+            <End Role="soldstock" EntitySet="soldstocks" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="fk_OrderDetail_Order1">
@@ -1300,6 +1272,40 @@
             </Principal>
             <Dependent Role="user">
               <PropertyRef Name="authorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="soldstock">
+          <Key>
+            <PropertyRef Name="soldStokId" />
+          </Key>
+          <Property Name="soldStokId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="stockId" Type="Int32" Nullable="false" />
+          <Property Name="soldItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="solditem" Relationship="pharmacyModel.fk_table1_SoldItems1" FromRole="soldstock" ToRole="solditem" />
+          <NavigationProperty Name="stock" Relationship="pharmacyModel.fk_table1_Stock1" FromRole="soldstock" ToRole="stock" />
+        </EntityType>
+        <Association Name="fk_table1_SoldItems1">
+          <End Type="pharmacyModel.solditem" Role="solditem" Multiplicity="1" />
+          <End Type="pharmacyModel.soldstock" Role="soldstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="solditem">
+              <PropertyRef Name="soldItemId" />
+            </Principal>
+            <Dependent Role="soldstock">
+              <PropertyRef Name="soldItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_table1_Stock1">
+          <End Type="pharmacyModel.stock" Role="stock" Multiplicity="1" />
+          <End Type="pharmacyModel.soldstock" Role="soldstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="stock">
+              <PropertyRef Name="stockId" />
+            </Principal>
+            <Dependent Role="soldstock">
+              <PropertyRef Name="stockId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1472,6 +1478,9 @@
           <EntitySetMapping Name="sales">
             <EntityTypeMapping TypeName="pharmacyModel.sale">
               <MappingFragment StoreEntitySet="sales">
+                <ScalarProperty Name="netAmountAfterOD" ColumnName="netAmountAfterOD" />
+                <ScalarProperty Name="overallDiscounPercentage" ColumnName="overallDiscounPercentage" />
+                <ScalarProperty Name="salesStatus" ColumnName="salesStatus" />
                 <ScalarProperty Name="salesId" ColumnName="salesId" />
                 <ScalarProperty Name="date" ColumnName="date" />
                 <ScalarProperty Name="empId" ColumnName="empId" />
@@ -1501,15 +1510,6 @@
                 <ScalarProperty Name="quantity" ColumnName="quantity" />
                 <ScalarProperty Name="batchNO" ColumnName="batchNO" />
                 <ScalarProperty Name="expiryDate" ColumnName="expiryDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="stocksales">
-            <EntityTypeMapping TypeName="pharmacyModel.stocksale">
-              <MappingFragment StoreEntitySet="stocksales">
-                <ScalarProperty Name="stockSalesID" ColumnName="stockSalesID" />
-                <ScalarProperty Name="stockId" ColumnName="stockId" />
-                <ScalarProperty Name="salesId" ColumnName="salesId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1543,6 +1543,15 @@
                 <ScalarProperty Name="tableName" ColumnName="tableName" />
                 <ScalarProperty Name="userName" ColumnName="userName" />
                 <ScalarProperty Name="pharmacyLogId" ColumnName="pharmacyLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="soldstocks">
+            <EntityTypeMapping TypeName="pharmacyModel.soldstock">
+              <MappingFragment StoreEntitySet="soldstock">
+                <ScalarProperty Name="soldItemId" ColumnName="soldItemId" />
+                <ScalarProperty Name="stockId" ColumnName="stockId" />
+                <ScalarProperty Name="soldStokId" ColumnName="soldStokId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

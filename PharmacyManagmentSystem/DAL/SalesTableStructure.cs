@@ -7,11 +7,11 @@ namespace PharmacyManagmentSystem.DAL
 {
     public class SalesTableStructure
     {
-        int salesId;
-        public int SalesId
+        int soldItemId;
+        public int SoldItemId
         {
-            get { return salesId; }
-            set { salesId = value; }
+            get { return soldItemId; }
+            set { soldItemId = value; }
         }
 
         string product;
@@ -28,28 +28,28 @@ namespace PharmacyManagmentSystem.DAL
         }
 
 
-        double unitPrice;
-        public double UnitPrice
+        double? unitPrice;
+        public double? UnitPrice
         {
             get { return unitPrice; }
             set { unitPrice = value; }
         }
 
-        double amount;
-        public double Amount
+        double? amount;
+        public double? Amount
         {
             get { return amount; }
             set { amount = value; }
         }
 
-        int discount;
-        public int Discount
+        double? discount;
+        public double? Discount
         {
             get { return discount; }
             set { discount = value; }
         }
-        double netAmount;
-        public double NetAmount
+        double? netAmount;
+        public double? NetAmount
         {
             get { return netAmount; }
             set { netAmount = value; }

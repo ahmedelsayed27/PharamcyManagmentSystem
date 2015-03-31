@@ -32,7 +32,10 @@ namespace PharmacyManagmentSystem.Controllers
            this.Session["userName"] = list[0];
            this.Session["firstName"] = list[1];
            this.Session["EmpID"] = list[2];
-           this.Session.Timeout = 30;
+          //////////////////////////////////////to del start///////////////////////////
+           int Id = int.Parse(this.Session["EmpId"].ToString());    ///this code will be deleted after sales call from previouse page
+           this.Session["SalesID"] = pdal.StartANewSale(Id, DateTime.Now);
+            //////////////////to del end///////////////////////////////////////////////////
            return RedirectToAction("Sales", "Sales");          
         }
        

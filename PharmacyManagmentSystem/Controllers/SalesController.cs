@@ -15,11 +15,15 @@ namespace PharmacyManagmentSystem.Controllers
             return View();
         }
 
-       public ActionResult Sales()
+       public ActionResult Sales( )//int id)
        {
-           List<SalesTableStructure> sales=new List<SalesTableStructure>();
+           //if (id == null)
+           //{ }
+          
+           int id = int.Parse(this.Session["SalesID"].ToString());
+           List<SalesTableStructure> sales = pdal.salesItems(id);
            ViewData["salesItems"] = sales;
-           return View(ViewData["salesItems"]);
+           return View(ViewData["salesItems"]);         
        }
 
 
@@ -36,5 +40,37 @@ namespace PharmacyManagmentSystem.Controllers
            return Json(productsCount);
        }
 
+       public JsonResult StartNewSale(string ProductDetailID)
+       {
+           int id = int.Parse(this.Session["EmpId"].ToString());
+           this.Session["SalesID"] = pdal.StartANewSale(id, DateTime.Now);  //create a new sale
+           return Json("ok");
+       }
+       public ActionResult DeletSalesItem(int solditemID)
+       {
+           pdal.DeleteSoldItem(solditemID);
+           return RedirectToAction("Sales", "Sales");     
+       }
+
+       public JsonResult SaveSoldItem(string quantity,string  amount,string discount,string  netAmount, string proDetID)
+       {
+           int _salesid = int.Parse(this.Session["SalesID"].ToString());
+           int _quantity = int.Parse(quantity);
+           double _amount = double.Parse(amount);
+           int _discount = int.Parse(discount);
+           double _netAmount = double.Parse(netAmount);
+           int _proDetID = int.Parse(proDetID);
+          string returnmessage= pdal.SaveASoldItem(_quantity,_amount,_discount,_salesid,_netAmount,_proDetID);
+        //  ViewData["salesItems"] = pdal.salesItems(_salesid);
+          if (returnmessage == "ok")
+          {
+              ViewData["salesItems"] = pdal.salesItems(_salesid);
+              return Json("ok");
+          }
+          else
+          {
+              return Json("not ok");
+          }          
+       }
 	}
 }
