@@ -15,6 +15,10 @@ namespace PharmacyManagmentSystem.Controllers
             return View();
         }
 
+       public ActionResult todelextra()
+       {
+           return View();
+       }
        public ActionResult Sales( )//int id)
        {
            //if (id == null)
