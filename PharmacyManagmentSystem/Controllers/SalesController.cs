@@ -15,11 +15,7 @@ namespace PharmacyManagmentSystem.Controllers
             return View();
         }
 
-       public ActionResult todelextra()
-       {
-           return View();
-       }
-       public ActionResult Sales( )//int id)
+      public ActionResult Sales( )//int id)
        {
            //if (id == null)
            //{ }
@@ -44,16 +40,68 @@ namespace PharmacyManagmentSystem.Controllers
            return Json(productsCount);
        }
 
-       public JsonResult StartNewSale(string ProductDetailID)
+       public ActionResult StartNewSale()
        {
            int id = int.Parse(this.Session["EmpId"].ToString());
            this.Session["SalesID"] = pdal.StartANewSale(id, DateTime.Now);  //create a new sale
-           return Json("ok");
+           return (RedirectToAction("Sales","Sales"));
        }
-       public ActionResult DeletSalesItem(int solditemID)
+
+       public ActionResult Bill()
        {
-           pdal.DeleteSoldItem(solditemID);
+          int salesID=int.Parse(this.Session["SalesID"].ToString());
+          var check =pdal.BillSales(salesID);
+          if (check == "Done")
+           {
+               int id = int.Parse(this.Session["EmpId"].ToString());
+               this.Session["SalesID"] = pdal.StartANewSale(id, DateTime.Now);  //create a new sale
+               return (RedirectToAction("Sales", "Sales"));
+           }
+          ViewData["BillSaleError"] = check;
+           return (RedirectToAction("Sales", "Sales"));
+       }
+
+       public ActionResult CancelSales()
+       {
+           int salesID = int.Parse(this.Session["SalesID"].ToString());
+           var check = pdal.CancelSale(salesID);
+           if (check == true)
+           {
+               int id = int.Parse(this.Session["EmpId"].ToString());
+               this.Session["SalesID"] = pdal.StartANewSale(id, DateTime.Now);  //create a new sale
+               return (RedirectToAction("Sales", "Sales"));
+           }
+           ViewData["CancelSaleError"] = "Can Not Cancel , Try Again!!!!!!!!";
+           return (RedirectToAction("Sales", "Sales"));
+       }
+        public ActionResult DeletSalesItem(int id)
+       {
+           if (id ==null)
+       {
+           HttpNotFound();
+       }
+           var check=  pdal.DeleteSoldItem(id);
+           if (check == true)
+           {
+               return RedirectToAction("Sales", "Sales"); 
+           }
+           ViewData["SoldItemDeleteError"] = "can not Delete Item, Try Again!!!!!!!!!!!!";
            return RedirectToAction("Sales", "Sales");     
+       }
+
+       public ActionResult GetDraftSales()
+       {
+           try
+           {
+               int EmpId = int.Parse(this.Session["EmpId"].ToString());
+               var DraftSales= pdal.GetDraftSalesOfAnEmployee(EmpId);
+               ViewData["DraftSales"] = DraftSales;
+               return View(ViewData["DraftSales"]);
+           }
+           catch
+           {
+               return View();           
+           }       
        }
 
        public JsonResult SaveSoldItem(string quantity,string  amount,string discount,string  netAmount, string proDetID)

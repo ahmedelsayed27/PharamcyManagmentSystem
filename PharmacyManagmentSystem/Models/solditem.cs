@@ -36,11 +36,15 @@ public partial class solditem
 
     public int salesId { get; set; }
 
+    public int productDetailId { get; set; }
+
 
 
     public virtual sale sale { get; set; }
 
     public virtual ICollection<soldstock> soldstocks { get; set; }
+
+    public virtual productdetail productdetail { get; set; }
 
 }
 

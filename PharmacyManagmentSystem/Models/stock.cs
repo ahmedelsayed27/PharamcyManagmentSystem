@@ -46,6 +46,8 @@ public partial class stock
 
     public Nullable<int> expireDays { get; set; }
 
+    public int productDetailId { get; set; }
+
 
 
     public virtual ICollection<borrowlendstock> borrowlendstocks { get; set; }
@@ -55,6 +57,8 @@ public partial class stock
     public virtual orderdetail orderdetail { get; set; }
 
     public virtual ICollection<soldstock> soldstocks { get; set; }
+
+    public virtual productdetail productdetail { get; set; }
 
 }
 

@@ -23,6 +23,10 @@ public partial class productdetail
 
         this.productsupplieds = new HashSet<productsupplied>();
 
+        this.solditems = new HashSet<solditem>();
+
+        this.stocks = new HashSet<stock>();
+
     }
 
 
@@ -37,6 +41,10 @@ public partial class productdetail
     public virtual product product { get; set; }
 
     public virtual ICollection<productsupplied> productsupplieds { get; set; }
+
+    public virtual ICollection<solditem> solditems { get; set; }
+
+    public virtual ICollection<stock> stocks { get; set; }
 
 }
 

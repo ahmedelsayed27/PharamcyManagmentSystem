@@ -182,6 +182,7 @@
           <Property Name="amount" Type="double" />
           <Property Name="discount" Type="double" />
           <Property Name="salesId" Type="int" Nullable="false" />
+          <Property Name="productDetailId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="soldstock">
           <Key>
@@ -203,6 +204,7 @@
           <Property Name="batchNO" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="expiryDate" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="expireDays" Type="int" />
+          <Property Name="productDetailId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="supplier">
           <Key>
@@ -451,6 +453,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_SoldItems_ProductDetails1">
+          <End Role="productdetails" Type="Self.productdetails" Multiplicity="1" />
+          <End Role="solditems" Type="Self.solditems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productdetails">
+              <PropertyRef Name="productDetailId" />
+            </Principal>
+            <Dependent Role="solditems">
+              <PropertyRef Name="productDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_SoldItems_Sales1">
           <End Role="sales" Type="Self.sales" Multiplicity="1" />
           <End Role="solditems" Type="Self.solditems" Multiplicity="*" />
@@ -472,6 +486,18 @@
             </Principal>
             <Dependent Role="stock">
               <PropertyRef Name="orderDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Stock_ProductDetails1">
+          <End Role="productdetails" Type="Self.productdetails" Multiplicity="1" />
+          <End Role="stock" Type="Self.stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productdetails">
+              <PropertyRef Name="productDetailId" />
+            </Principal>
+            <Dependent Role="stock">
+              <PropertyRef Name="productDetailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -610,12 +636,20 @@
             <End Role="employee" EntitySet="employee" />
             <End Role="sales" EntitySet="sales" />
           </AssociationSet>
+          <AssociationSet Name="fk_SoldItems_ProductDetails1" Association="Self.fk_SoldItems_ProductDetails1">
+            <End Role="productdetails" EntitySet="productdetails" />
+            <End Role="solditems" EntitySet="solditems" />
+          </AssociationSet>
           <AssociationSet Name="fk_SoldItems_Sales1" Association="Self.fk_SoldItems_Sales1">
             <End Role="sales" EntitySet="sales" />
             <End Role="solditems" EntitySet="solditems" />
           </AssociationSet>
           <AssociationSet Name="fk_Stock_OrderDetails1" Association="Self.fk_Stock_OrderDetails1">
             <End Role="orderdetail" EntitySet="orderdetail" />
+            <End Role="stock" EntitySet="stock" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Stock_ProductDetails1" Association="Self.fk_Stock_ProductDetails1">
+            <End Role="productdetails" EntitySet="productdetails" />
             <End Role="stock" EntitySet="stock" />
           </AssociationSet>
           <AssociationSet Name="fk_table1_SoldItems1" Association="Self.fk_table1_SoldItems1">
@@ -803,6 +837,8 @@
           <Property Name="productSize" Type="Double" Nullable="false" />
           <NavigationProperty Name="product" Relationship="Self.fk_productDetails_Product1" FromRole="productdetails" ToRole="product" />
           <NavigationProperty Name="productsupplieds" Relationship="Self.fk_product_suplied_ProductDetails1" FromRole="productdetails" ToRole="productsupplied" />
+          <NavigationProperty Name="solditems" Relationship="pharmacyModel.fk_SoldItems_ProductDetails1" FromRole="productdetail" ToRole="solditem" />
+          <NavigationProperty Name="stocks" Relationship="pharmacyModel.fk_Stock_ProductDetails1" FromRole="productdetail" ToRole="stock" />
         </EntityType>
         <EntityType Name="productsupplied">
           <Key>
@@ -840,6 +876,8 @@
           <Property Name="salesId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="sale" Relationship="Self.fk_SoldItems_Sales1" FromRole="solditems" ToRole="sales" />
           <NavigationProperty Name="soldstocks" Relationship="pharmacyModel.fk_table1_SoldItems1" FromRole="solditem" ToRole="soldstock" />
+          <Property Name="productDetailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="productdetail" Relationship="pharmacyModel.fk_SoldItems_ProductDetails1" FromRole="solditem" ToRole="productdetail" />
         </EntityType>
         <EntityType Name="stock">
           <Key>
@@ -857,6 +895,8 @@
           <Property Name="itemSold" Type="Int32" />
           <Property Name="expireDays" Type="Int32" />
           <NavigationProperty Name="soldstocks" Relationship="pharmacyModel.fk_table1_Stock1" FromRole="stock" ToRole="soldstock" />
+          <Property Name="productDetailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="productdetail" Relationship="pharmacyModel.fk_Stock_ProductDetails1" FromRole="stock" ToRole="productdetail" />
         </EntityType>
         <EntityType Name="supplier">
           <Key>
@@ -1227,6 +1267,14 @@
             <End Role="stock" EntitySet="stocks" />
             <End Role="soldstock" EntitySet="soldstocks" />
           </AssociationSet>
+          <AssociationSet Name="fk_SoldItems_ProductDetails1" Association="pharmacyModel.fk_SoldItems_ProductDetails1">
+            <End Role="productdetail" EntitySet="productdetails" />
+            <End Role="solditem" EntitySet="solditems" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Stock_ProductDetails1" Association="pharmacyModel.fk_Stock_ProductDetails1">
+            <End Role="productdetail" EntitySet="productdetails" />
+            <End Role="stock" EntitySet="stocks" />
+          </AssociationSet>
           </EntityContainer>
         <Association Name="fk_OrderDetail_Order1">
           <End Type="pharmacyModel.order" Role="order" Multiplicity="1" />
@@ -1306,6 +1354,30 @@
             </Principal>
             <Dependent Role="soldstock">
               <PropertyRef Name="stockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_SoldItems_ProductDetails1">
+          <End Type="pharmacyModel.productdetail" Role="productdetail" Multiplicity="1" />
+          <End Type="pharmacyModel.solditem" Role="solditem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productdetail">
+              <PropertyRef Name="productDetailId" />
+            </Principal>
+            <Dependent Role="solditem">
+              <PropertyRef Name="productDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Stock_ProductDetails1">
+          <End Type="pharmacyModel.productdetail" Role="productdetail" Multiplicity="1" />
+          <End Type="pharmacyModel.stock" Role="stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productdetail">
+              <PropertyRef Name="productDetailId" />
+            </Principal>
+            <Dependent Role="stock">
+              <PropertyRef Name="productDetailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1491,6 +1563,7 @@
           <EntitySetMapping Name="solditems">
             <EntityTypeMapping TypeName="pharmacyModel.solditem">
               <MappingFragment StoreEntitySet="solditems">
+                <ScalarProperty Name="productDetailId" ColumnName="productDetailId" />
                 <ScalarProperty Name="soldItemId" ColumnName="soldItemId" />
                 <ScalarProperty Name="quantity" ColumnName="quantity" />
                 <ScalarProperty Name="amount" ColumnName="amount" />
@@ -1502,6 +1575,7 @@
           <EntitySetMapping Name="stocks">
             <EntityTypeMapping TypeName="pharmacyModel.stock">
               <MappingFragment StoreEntitySet="stock">
+                <ScalarProperty Name="productDetailId" ColumnName="productDetailId" />
                 <ScalarProperty Name="expireDays" ColumnName="expireDays" />
                 <ScalarProperty Name="itemSold" ColumnName="itemSold" />
                 <ScalarProperty Name="sellingPricePrItem" ColumnName="sellingPricePrItem" />

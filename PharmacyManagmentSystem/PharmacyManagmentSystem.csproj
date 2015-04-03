@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\LendProducts\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\DesignationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LendProductsController.cs" />
     <Compile Include="Controllers\OrderAndHistoryController.cs" />
     <Compile Include="Controllers\SalesController.cs" />
     <Compile Include="DAL\NextOrderStatus.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="DAL\ProductListWithSizeAndCategory.cs" />
     <Compile Include="DAL\ReturnValuesForStock.cs" />
     <Compile Include="DAL\SalesTableStructure.cs" />
+    <Compile Include="DAL\TwoIntegers.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -375,36 +375,26 @@ namespace PharmacyManagmentSystem.DAL
 
         public void EditOrAddForOrderReciveItem(OrderReciveStructure OrderRecive)
         { //need changes
-            //try{
-                if (OrderRecive.StockId == null)
-                {//new order
-                    stock stock = new stock();
-                    stock.orderDetailId = OrderRecive.OrderDetailID;
-                    stock.itemSold = OrderRecive.ItemSold;
-                    stock.batchNO = OrderRecive.BatchNO;
-                    stock.expireDays = OrderRecive.ExpireDays;
-                    stock.expiryDate = (DateTime)OrderRecive.ExpiryDate;
-                    stock.quantity = (int)OrderRecive.QuantityAcepted;
-                    stock.sellingPricePrItem = OrderRecive.SellingPricePrItem;
-                    db.stocks.Add(stock);
-                    db.SaveChanges();
-                    orderdetail detail = db.orderdetails.Find(OrderRecive.OrderDetailID);
-                    detail.discountPercentage = OrderRecive.DiscountPercentage;
-                    detail.orderRecivingDate = OrderRecive.OrderRecivingDate;
-                    detail.packSize = OrderRecive.PackSize;
-                    detail.PricePrItem = OrderRecive.PricePrItem;
-                    detail.quantityRecived = OrderRecive.QuantityRecived;
-                    db.SaveChanges();                   
-                }
-                else
-                {  //old order
-                    stock stock =db.stocks.Find(OrderRecive.StockId);
-                    if (stock.batchNO == OrderRecive.BatchNO)
-                    { //same order update values
-                        stock.expireDays=OrderRecive.ExpireDays;
-                        stock.expiryDate =(DateTime) OrderRecive.ExpiryDate;
+            using (var dbTransaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (OrderRecive.StockId == null)
+                    {//new order
+                        stock stock = new stock();
+                        stock.orderDetailId = OrderRecive.OrderDetailID;
+                        stock.itemSold = OrderRecive.ItemSold;
+                        stock.batchNO = OrderRecive.BatchNO;
+                        stock.expireDays = OrderRecive.ExpireDays;
+                        stock.expiryDate = (DateTime)OrderRecive.ExpiryDate;
                         stock.quantity = (int)OrderRecive.QuantityAcepted;
                         stock.sellingPricePrItem = OrderRecive.SellingPricePrItem;
+                       int orderDetID= OrderRecive.OrderDetailID;
+                       orderdetail ODetail= db.orderdetails.Where(o => o.orderDetailId == orderDetID).FirstOrDefault();
+                       int productsupID = ODetail.productSuppliedId;
+                       productsupplied proSup = db.productsupplieds.Where(p => p.productSuppliedId == productsupID).FirstOrDefault();
+                       stock.productDetailId = proSup.productDetailId ;
+                        db.stocks.Add(stock);
                         db.SaveChanges();
                         orderdetail detail = db.orderdetails.Find(OrderRecive.OrderDetailID);
                         detail.discountPercentage = OrderRecive.DiscountPercentage;
@@ -414,24 +404,50 @@ namespace PharmacyManagmentSystem.DAL
                         detail.quantityRecived = OrderRecive.QuantityRecived;
                         db.SaveChanges();
                     }
-                    else { // may be partialy recived -- add  new stock row                   
-                        stock newStock = new stock();
-                        newStock.batchNO = OrderRecive.BatchNO;
-                        newStock.expireDays = OrderRecive.ExpireDays;
-                        newStock.expiryDate = (DateTime)OrderRecive.ExpiryDate;
-                        newStock.itemSold = 0;
-                        newStock.orderDetailId = OrderRecive.OrderDetailID;
-                        newStock.quantity = (int)OrderRecive.QuantityAcepted;
-                        newStock.sellingPricePrItem = OrderRecive.SellingPricePrItem;
-                        db.stocks.Add(newStock);
-                        db.SaveChanges();
-                    }               
-                }            
-            //}
-            //catch(Exception e)
-            //{
-            //    throw new UpdateException("Can Not Update Record, Please Provid All Valid Values. Try Again");
-            //}         
+                    else
+                    {  //old order
+                        stock stock = db.stocks.Find(OrderRecive.StockId);
+                        if (stock.batchNO == OrderRecive.BatchNO)
+                        { //same order update values
+                            stock.expireDays = OrderRecive.ExpireDays;
+                            stock.expiryDate = (DateTime)OrderRecive.ExpiryDate;
+                            stock.quantity = (int)OrderRecive.QuantityAcepted;
+                            stock.sellingPricePrItem = OrderRecive.SellingPricePrItem;
+                            db.SaveChanges();
+                            orderdetail detail = db.orderdetails.Find(OrderRecive.OrderDetailID);
+                            detail.discountPercentage = OrderRecive.DiscountPercentage;
+                            detail.orderRecivingDate = OrderRecive.OrderRecivingDate;
+                            detail.packSize = OrderRecive.PackSize;
+                            detail.PricePrItem = OrderRecive.PricePrItem;
+                            detail.quantityRecived = OrderRecive.QuantityRecived;
+                            db.SaveChanges();
+                        }
+                        else
+                        { // may be partialy recived -- add  new stock row                   
+                            stock newStock = new stock();
+                            newStock.batchNO = OrderRecive.BatchNO;
+                            newStock.expireDays = OrderRecive.ExpireDays;
+                            newStock.expiryDate = (DateTime)OrderRecive.ExpiryDate;
+                            newStock.itemSold = 0;
+                            newStock.orderDetailId = OrderRecive.OrderDetailID;
+                            newStock.quantity = (int)OrderRecive.QuantityAcepted;
+                            newStock.sellingPricePrItem = OrderRecive.SellingPricePrItem;
+                            int orderDetID = OrderRecive.OrderDetailID;
+                            orderdetail ODetail = db.orderdetails.Where(o => o.orderDetailId == orderDetID).FirstOrDefault();
+                            int productsupID = ODetail.productSuppliedId;
+                            productsupplied proSup = db.productsupplieds.Where(p => p.productSuppliedId == productsupID).FirstOrDefault();
+                            newStock.productDetailId = proSup.productDetailId;
+                            db.stocks.Add(newStock);
+                            db.SaveChanges();
+                        }
+                    }
+                    dbTransaction.Commit();
+                }
+                catch (Exception)
+                {
+                    dbTransaction.Rollback();
+                }
+            }
         }
 
         public List<OrderReciveStructure> GetOrderReciveItem(int? id)
@@ -654,12 +670,13 @@ namespace PharmacyManagmentSystem.DAL
                    sold.discount = DiscountPrcentage;
                    sold.quantity = Quantity;
                    sold.salesId = salesId;
+                   sold.productDetailId = requiredproDetailID;
                    var forsoldItem = db.solditems.Add(sold);
                    db.SaveChanges();      
                    sale saleItem = db.sales.Find(salesId);
                    if (saleItem != null)
                    {
-                       if (saleItem.netAmount > 0 || saleItem.netAmount != null)
+                       if (saleItem.netAmount > 0 )
                        {
                            saleItem.netAmount += NetAmount;
                        }
@@ -676,7 +693,7 @@ namespace PharmacyManagmentSystem.DAL
                        newsale = new soldstock();
                        newsale.soldItemId = forsoldItem.soldItemId;
                        newsale.stockId = id;
-                       var chkwhatisin = db.soldstocks.Add(newsale);
+                       db.soldstocks.Add(newsale);
                        db.SaveChanges();
                    }
                    dbTransaction.Commit();
@@ -684,6 +701,7 @@ namespace PharmacyManagmentSystem.DAL
                catch (Exception)
                {
                    dbTransaction.Rollback();
+                   return "Not-ok";
                }
            }
            return "ok" ; 
@@ -731,11 +749,12 @@ namespace PharmacyManagmentSystem.DAL
        {
            Item = new SalesTableStructure();
            var sold= s.soldstocks.Where(t => t.soldItemId == s.soldItemId);
-           Item.Product = GetProductNameForSoldItem(s.soldItemId);          
+           Item.Product = GetProductNameForSoldItem(s.productDetailId);          
            Item.Quantity = s.quantity;
            Item.UnitPrice = s.amount/s.quantity;
            Item.Amount = s.amount;
            Item.Discount = s.discount;
+           Item.SoldItemId = s.soldItemId;
            if(s.discount > 0)
            {
                Item.NetAmount = s.amount - ((s.amount * s.discount) / 100);
@@ -743,51 +762,270 @@ namespace PharmacyManagmentSystem.DAL
            }
            else{
            Item.NetAmount = s.amount;
-           }
-           Item.SoldItemId = s.soldItemId;
+           }          
            list.Add(Item);
        }
        return list;       
        }
 
-       public string GetProductNameForSoldItem(int solditemId)
-       {
-           IQueryable<soldstock> outer = db.soldstocks;
-           IQueryable<stock> inner = db.stocks;
-           var result = outer.Where(item=> item.soldItemId ==solditemId )
-               .Join(inner,
-               item=>item.stockId,
-               stok=>stok.stockId,
-               (item,stok) => new 
-               {
-               stocID=stok.stockId,
-                 stocID2=stok.stockId
-                });
-           SelectList list = new SelectList(result, "stocID", "stocID2");
-           var StockID = list.FirstOrDefault();
-           int stockId=int.Parse( StockID.Value.ToString());
+       public string GetProductNameForSoldItem(int productdetailid)
+       {        
            string ProductNametoReturn = "";
-           stock  _stock = db.stocks.Where(s => s.stockId == stockId).FirstOrDefault();
-           int orderDetId = _stock.orderDetailId;
-           orderdetail _orderDetail = db.orderdetails.Where(o => o.orderDetailId == orderDetId).FirstOrDefault();
-           int prodSupId = _orderDetail.productSuppliedId;
-           productsupplied _prosup = db.productsupplieds.Where(p => p.productSuppliedId == prodSupId).FirstOrDefault();
-           int proDetId = _prosup.productDetailId;
-           productdetail _prodDet = db.productdetails.Where(p => p.productDetailId == proDetId).FirstOrDefault();
+           productdetail _prodDet = db.productdetails.Where(p => p.productDetailId == productdetailid).FirstOrDefault();
            int prodId = _prodDet.productId;
            ProductNametoReturn = _prodDet.productSize.ToString();
            product _pro = db.products.Where(p => p.productId == prodId).FirstOrDefault();
            int catId = _pro.categoryId;
-           ProductNametoReturn = _pro.productName.ToString() + ProductNametoReturn;
+           ProductNametoReturn = _pro.productName.ToString()+" , " + ProductNametoReturn;
            category _cat = db.categories.Where(c => c.categoryId == catId).FirstOrDefault();
-           ProductNametoReturn = ProductNametoReturn + _cat.categoryName.ToString();
+           ProductNametoReturn = ProductNametoReturn +" , "+ _cat.categoryName.ToString();
            return ProductNametoReturn;
        }
 
-        public void  DeleteSoldItem(int solditemID)
+       public bool DeleteSoldItem(int solditemID)
+       {
+           ///////delete soldstok then sold item of respective  solditem ID        
+           using (var dbTransaction = db.Database.BeginTransaction())
+           {
+               try
+               {
+                   var soldStockItems = db.soldstocks.Where(s => s.soldItemId == solditemID);
+                   foreach (var s in soldStockItems)
+                   {
+                       soldstock SS = db.soldstocks.Find(s.soldStokId);
+                       db.soldstocks.Remove(SS);
+                       db.SaveChanges();
+                   }
+                   solditem SI = db.solditems.Find(solditemID);
+                   db.solditems.Remove(SI);
+                   db.SaveChanges();
+                   dbTransaction.Commit();
+                   return true;
+               }
+               catch (Exception)
+               {
+                   dbTransaction.Rollback();
+                   return false;
+               }
+           }
+       }
+
+       public string BillSales(int salesID)
+       {
+           string MessageReturn = "";
+           bool AllOK = true;
+           var salesItemsTosell = db.solditems.Where(d => d.salesId == salesID);
+           foreach (solditem s in salesItemsTosell)
+           {
+               ReturnValuesForStock avalibleItems = GetNumberOfAvalibleProducts(s.productDetailId);
+               if (avalibleItems.Count < s.quantity)
+               {
+                   AllOK = false;
+                   MessageReturn = MessageReturn + " product Name:" + GetProductNameForSoldItem(s.productDetailId) + " Require Items are " + s.quantity + "  avalible items are" + avalibleItems.Count + "." + Environment.NewLine;
+               }
+           }
+           if (AllOK == true)
+           {                ////do selling
+               using (var dbTransaction = db.Database.BeginTransaction())
+               {
+                   try
+                   {
+                       List<TwoIntegers> SoldItemIdz = new List<TwoIntegers>();
+                       var salesItemsTosel = db.solditems.Where(d => d.salesId == salesID);
+                       foreach (solditem s in salesItemsTosel)
+                       {/////////////get all solditem idz + quentity reqired
+                           TwoIntegers t = new TwoIntegers();
+                           t.Id = s.soldItemId;
+                           t.Value = s.quantity;
+                           SoldItemIdz.Add(t);
+                       }
+                       foreach (TwoIntegers values in SoldItemIdz)
+                       { ///find all the respective rows of  soldstock
+                           int itemRemaining = values.Value;
+                           var soldstok = db.soldstocks.Where(s => s.soldItemId == values.Id);
+                           #region Single stock row
+                           if (soldstok.Count() == 1)
+                           {
+                               var sold1 = soldstok.FirstOrDefault();
+                               int stockid = sold1.stockId;
+                               stock s = db.stocks.Find(stockid);
+                               int productDetailID = s.productDetailId;
+                               if ((s.quantity - s.itemSold) >= itemRemaining)
+                               {
+                                   s.itemSold += itemRemaining;
+                                   db.SaveChanges();
+                                   itemRemaining = 0;
+                               }
+                               else
+                               {
+                                   itemRemaining = itemRemaining - (int)(s.quantity - s.itemSold);
+                                   s.itemSold = s.quantity;
+                                   db.SaveChanges();
+                                   soldstock newsold = new soldstock();
+                                   /////// find  more stock rows
+                                   List<int> list = GetStockIdsForProduct(productDetailID, itemRemaining);
+                                   foreach (int id in list)
+                                   {
+                                       stock st = db.stocks.Find(id);
+                                       if ((st.quantity - st.itemSold) >= itemRemaining)
+                                       {
+                                           st.itemSold += itemRemaining;
+                                           db.SaveChanges();
+                                           newsold = new soldstock();
+                                           newsold.stockId = id;
+                                           newsold.soldItemId = values.Id;
+                                           db.soldstocks.Add(newsold);
+                                           db.SaveChanges();
+                                           itemRemaining = 0;
+                                       }
+                                       else
+                                       {
+                                           itemRemaining = itemRemaining - (int)(st.quantity - st.itemSold);
+                                           st.itemSold = st.quantity;
+                                           db.SaveChanges();
+                                           newsold = new soldstock();
+                                           newsold.stockId = id;
+                                           newsold.soldItemId = values.Id;
+                                           db.soldstocks.Add(newsold);
+                                           db.SaveChanges();
+                                       }
+                                   }
+                               }
+                           }
+                           #endregion
+                           else
+                           {
+                               int productDetailID = 0;
+                               foreach (var sold in soldstok)
+                               {////// update each stock row one by one- for itemsold
+                               stock s = db.stocks.Find(sold.stockId);
+                               productDetailID = s.productDetailId;
+                               if ((s.quantity - s.itemSold) >= itemRemaining)
+                               {
+                                   s.itemSold += itemRemaining;
+                                   db.SaveChanges();
+                                   itemRemaining = 0;
+                               }
+                               else
+                               {
+                                   itemRemaining = itemRemaining - (int)(s.quantity - s.itemSold);
+                                   s.itemSold = s.quantity;
+                                   db.SaveChanges();
+                               }
+                               }
+
+                               #region rare case
+
+                               if (itemRemaining != 0)
+                               {
+                                   soldstock newsold = new soldstock();
+                                   /////// find  more stock rows
+                                   List<int> list = GetStockIdsForProduct(productDetailID, itemRemaining);
+                                   foreach (int id in list)
+                                   {
+                                       stock st = db.stocks.Find(id);
+                                       if ((st.quantity - st.itemSold) >= itemRemaining && itemRemaining!=0)
+                                       {
+                                           st.itemSold += itemRemaining;
+                                           db.SaveChanges();
+                                           newsold = new soldstock();
+                                           newsold.stockId = id;
+                                           newsold.soldItemId = values.Id;
+                                           db.soldstocks.Add(newsold);
+                                           db.SaveChanges();
+                                           itemRemaining = 0;
+                                       }
+                                       else if (itemRemaining != 0)
+                                       {
+                                           itemRemaining = itemRemaining - (int)(st.quantity - st.itemSold);
+                                           st.itemSold = st.quantity;
+                                           db.SaveChanges();
+                                           newsold = new soldstock();
+                                           newsold.stockId = id;
+                                           newsold.soldItemId = values.Id;
+                                           db.soldstocks.Add(newsold);
+                                           db.SaveChanges();
+                                       }
+                                   }
+                               }
+                               #endregion 
+                           }                           
+                       }
+                       ////////finaly update  sales item
+                       sale sales = db.sales.Find(salesID);
+                       sales.salesStatus = "Done";
+                       db.SaveChanges();
+                       dbTransaction.Commit();
+                       MessageReturn = "Done";
+                   }
+                   catch (Exception)
+                   {
+                       dbTransaction.Rollback();
+                       MessageReturn = MessageReturn + "can not perform this Bill , Please check Your network Connection and try again!!!!!!!!!";
+                       return MessageReturn;
+                   }
+               }
+               return MessageReturn;
+           }
+           else
+           { ////// no selling return with erro message
+               return MessageReturn;
+
+           }
+           /////////////////////////////////////////////function End////////////////////////////////////////////////////////////////////////////////////
+       }
+
+       public bool CancelSale(int salesID)
         {
-        ///////delete soldstok then sold item of respective  solditem ID        
+            using (var dbTransaction = db.Database.BeginTransaction())
+            {
+                try
+                {//removing stock sales entries
+                    List<int> SoldItemIdz = new List<int>();
+                    var salesItemsToDel = db.solditems.Where(d => d.salesId == salesID);
+                    foreach (solditem s in salesItemsToDel)
+                    {
+                        SoldItemIdz.Add(s.soldItemId);
+                    }
+                    foreach (int id in SoldItemIdz)
+                    { ///find all the respective rows of  soldstock
+                        var soldstok = db.soldstocks.Where(s => s.soldItemId == id);
+                        foreach (var sold in soldstok)
+                        {//////deleting each soldstock row one by one
+                            soldstock SS = db.soldstocks.Find(sold.soldStokId);
+                            db.soldstocks.Remove(SS);
+                            db.SaveChanges();
+                        }
+                        ////delete sales Item against id
+                        solditem SI = db.solditems.Find(id);
+                        db.solditems.Remove(SI);
+                        db.SaveChanges();
+                    }
+                    ////////finaly delete  sales item
+                    sale sales = db.sales.Find(salesID);
+                    db.sales.Remove(sales);
+                    db.SaveChanges();
+
+                    dbTransaction.Commit();
+                }
+                catch (Exception)
+                {
+                    dbTransaction.Rollback();
+                    return false;
+                }
+            }
+
+
+
+            return true;
         }
+        public List<sale> GetDraftSalesOfAnEmployee(int employeeId)
+        {
+            var Draftsales = db.sales.Where(s => s.empId == employeeId);
+            List < sale > list= Draftsales.ToList();
+            return list;
+        }
+       
        #endregion 
        protected override void Dispose(bool disposing)
         {
