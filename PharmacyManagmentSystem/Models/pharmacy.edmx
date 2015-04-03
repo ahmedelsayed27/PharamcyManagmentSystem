@@ -17,18 +17,57 @@
             <PropertyRef Name="borrowLendId" />
           </Key>
           <Property Name="borrowLendId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Status" Type="bool" Nullable="false" />
-          <Property Name="orderIdAgaintBorrowed" Type="int" />
+          <Property Name="branchId" Type="int" />
+          <Property Name="netAmount" Type="double" />
+          <Property Name="lendingDate" Type="date" />
+          <Property Name="borrowerName" Type="varchar" MaxLength="45" />
+          <Property Name="empId" Type="int" Nullable="false" />
+          <Property Name="borrowLendStatusId" Type="int" Nullable="false" />
+          <Property Name="lendingNumber" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <EntityType Name="borrowlendstatuses">
+          <Key>
+            <PropertyRef Name="borrowLendStatusId" />
+          </Key>
+          <Property Name="borrowLendStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="statusName" Type="varchar" MaxLength="45" />
+          <Property Name="discription" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="borrowlendstock">
           <Key>
             <PropertyRef Name="borrowLendStockId" />
           </Key>
           <Property Name="borrowLendStockId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="stockId" Type="int" Nullable="false" />
           <Property Name="borrowLendId" Type="int" Nullable="false" />
           <Property Name="quantityBorrowed" Type="int" />
           <Property Name="amount" Type="double" />
+          <Property Name="productDetailId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="borroworderlend">
+          <Key>
+            <PropertyRef Name="BorrowOrderLendId" />
+          </Key>
+          <Property Name="BorrowOrderLendId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="borrowLendId" Type="int" Nullable="false" />
+          <Property Name="orderId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="borrowstock">
+          <Key>
+            <PropertyRef Name="borrowStockId" />
+          </Key>
+          <Property Name="borrowStockId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="borrowLendStockId" Type="int" Nullable="false" />
+          <Property Name="stockId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="branch">
+          <Key>
+            <PropertyRef Name="branchId" />
+          </Key>
+          <Property Name="branchId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="branchName" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="branchAdress" Type="varchar" MaxLength="45" />
+          <Property Name="branchLocation" Type="varchar" MaxLength="45" />
+          <Property Name="branchContactNumber" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="category">
           <Key>
@@ -172,6 +211,7 @@
           <Property Name="salesStatus" Type="varchar" MaxLength="45" />
           <Property Name="overallDiscounPercentage" Type="int" />
           <Property Name="netAmountAfterOD" Type="double" />
+          <Property Name="customerName" Type="varchar" MaxLength="45" />
         </EntityType>
         <EntityType Name="solditems">
           <Key>
@@ -225,6 +265,42 @@
           <Property Name="enabled" Type="bit" Nullable="false" />
           <Property Name="authorityId" Type="smallint" />
         </EntityType>
+        <Association Name="fk_BorrowLend_BorrowLendStatuses1">
+          <End Role="borrowlendstatuses" Type="Self.borrowlendstatuses" Multiplicity="1" />
+          <End Role="borrowlend" Type="Self.borrowlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlendstatuses">
+              <PropertyRef Name="borrowLendStatusId" />
+            </Principal>
+            <Dependent Role="borrowlend">
+              <PropertyRef Name="borrowLendStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowLend_Branch1">
+          <End Role="branch" Type="Self.branch" Multiplicity="0..1" />
+          <End Role="borrowlend" Type="Self.borrowlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="branch">
+              <PropertyRef Name="branchId" />
+            </Principal>
+            <Dependent Role="borrowlend">
+              <PropertyRef Name="branchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowLend_Employee1">
+          <End Role="employee" Type="Self.employee" Multiplicity="1" />
+          <End Role="borrowlend" Type="Self.borrowlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="employee">
+              <PropertyRef Name="empId" />
+            </Principal>
+            <Dependent Role="borrowlend">
+              <PropertyRef Name="empId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_BorrowLendStock_BorrowLend1">
           <End Role="borrowlend" Type="Self.borrowlend" Multiplicity="1" />
           <End Role="borrowlendstock" Type="Self.borrowlendstock" Multiplicity="*" />
@@ -237,14 +313,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_BorrowLendStock_Stock1">
-          <End Role="stock" Type="Self.stock" Multiplicity="1" />
+        <Association Name="fk_BorrowLendStock_ProductDetails1">
+          <End Role="productdetails" Type="Self.productdetails" Multiplicity="1" />
           <End Role="borrowlendstock" Type="Self.borrowlendstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productdetails">
+              <PropertyRef Name="productDetailId" />
+            </Principal>
+            <Dependent Role="borrowlendstock">
+              <PropertyRef Name="productDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowOrderLend_BorrowLend1">
+          <End Role="borrowlend" Type="Self.borrowlend" Multiplicity="1" />
+          <End Role="borroworderlend" Type="Self.borroworderlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlend">
+              <PropertyRef Name="borrowLendId" />
+            </Principal>
+            <Dependent Role="borroworderlend">
+              <PropertyRef Name="borrowLendId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowOrderLend_Order1">
+          <End Role="order" Type="Self.order" Multiplicity="1" />
+          <End Role="borroworderlend" Type="Self.borroworderlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="orderId" />
+            </Principal>
+            <Dependent Role="borroworderlend">
+              <PropertyRef Name="orderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowStock_BorrowLendStock1">
+          <End Role="borrowlendstock" Type="Self.borrowlendstock" Multiplicity="1" />
+          <End Role="borrowstock" Type="Self.borrowstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlendstock">
+              <PropertyRef Name="borrowLendStockId" />
+            </Principal>
+            <Dependent Role="borrowstock">
+              <PropertyRef Name="borrowLendStockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowStock_Stock1">
+          <End Role="stock" Type="Self.stock" Multiplicity="1" />
+          <End Role="borrowstock" Type="Self.borrowstock" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="stock">
               <PropertyRef Name="stockId" />
             </Principal>
-            <Dependent Role="borrowlendstock">
+            <Dependent Role="borrowstock">
               <PropertyRef Name="stockId" />
             </Dependent>
           </ReferentialConstraint>
@@ -540,7 +664,11 @@
         <EntityContainer Name="pharmacyModelStoreContainer">
           <EntitySet Name="authorities" EntityType="Self.authorities" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="borrowlend" EntityType="Self.borrowlend" Schema="pharmacy" store:Type="Tables" />
+          <EntitySet Name="borrowlendstatuses" EntityType="Self.borrowlendstatuses" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="borrowlendstock" EntityType="Self.borrowlendstock" Schema="pharmacy" store:Type="Tables" />
+          <EntitySet Name="borroworderlend" EntityType="Self.borroworderlend" Schema="pharmacy" store:Type="Tables" />
+          <EntitySet Name="borrowstock" EntityType="Self.borrowstock" Schema="pharmacy" store:Type="Tables" />
+          <EntitySet Name="branch" EntityType="Self.branch" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="category" EntityType="Self.category" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="department" EntityType="Self.department" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="designation" EntityType="Self.designation" Schema="pharmacy" store:Type="Tables" />
@@ -560,13 +688,41 @@
           <EntitySet Name="stock" EntityType="Self.stock" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="supplier" EntityType="Self.supplier" Schema="pharmacy" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="pharmacy" store:Type="Tables" />
+          <AssociationSet Name="fk_BorrowLend_BorrowLendStatuses1" Association="Self.fk_BorrowLend_BorrowLendStatuses1">
+            <End Role="borrowlendstatuses" EntitySet="borrowlendstatuses" />
+            <End Role="borrowlend" EntitySet="borrowlend" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowLend_Branch1" Association="Self.fk_BorrowLend_Branch1">
+            <End Role="branch" EntitySet="branch" />
+            <End Role="borrowlend" EntitySet="borrowlend" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowLend_Employee1" Association="Self.fk_BorrowLend_Employee1">
+            <End Role="employee" EntitySet="employee" />
+            <End Role="borrowlend" EntitySet="borrowlend" />
+          </AssociationSet>
           <AssociationSet Name="fk_BorrowLendStock_BorrowLend1" Association="Self.fk_BorrowLendStock_BorrowLend1">
             <End Role="borrowlend" EntitySet="borrowlend" />
             <End Role="borrowlendstock" EntitySet="borrowlendstock" />
           </AssociationSet>
-          <AssociationSet Name="fk_BorrowLendStock_Stock1" Association="Self.fk_BorrowLendStock_Stock1">
-            <End Role="stock" EntitySet="stock" />
+          <AssociationSet Name="fk_BorrowLendStock_ProductDetails1" Association="Self.fk_BorrowLendStock_ProductDetails1">
+            <End Role="productdetails" EntitySet="productdetails" />
             <End Role="borrowlendstock" EntitySet="borrowlendstock" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowOrderLend_BorrowLend1" Association="Self.fk_BorrowOrderLend_BorrowLend1">
+            <End Role="borrowlend" EntitySet="borrowlend" />
+            <End Role="borroworderlend" EntitySet="borroworderlend" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowOrderLend_Order1" Association="Self.fk_BorrowOrderLend_Order1">
+            <End Role="order" EntitySet="order" />
+            <End Role="borroworderlend" EntitySet="borroworderlend" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowStock_BorrowLendStock1" Association="Self.fk_BorrowStock_BorrowLendStock1">
+            <End Role="borrowlendstock" EntitySet="borrowlendstock" />
+            <End Role="borrowstock" EntitySet="borrowstock" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowStock_Stock1" Association="Self.fk_BorrowStock_Stock1">
+            <End Role="stock" EntitySet="stock" />
+            <End Role="borrowstock" EntitySet="borrowstock" />
           </AssociationSet>
           <AssociationSet Name="fk_Designation_Designation1" Association="Self.fk_Designation_Designation1">
             <End Role="designation" EntitySet="designation" />
@@ -677,27 +833,6 @@
           <Property Name="authority1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="users" Relationship="pharmacyModel.fk_Users_Authorities1" FromRole="authority" ToRole="user" />
         </EntityType>
-        <EntityType Name="borrowlend">
-          <Key>
-            <PropertyRef Name="borrowLendId" />
-          </Key>
-          <Property Name="borrowLendId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Status" Type="Boolean" Nullable="false" />
-          <Property Name="orderIdAgaintBorrowed" Type="Int32" />
-          <NavigationProperty Name="borrowlendstocks" Relationship="Self.fk_BorrowLendStock_BorrowLend1" FromRole="borrowlend" ToRole="borrowlendstock" />
-        </EntityType>
-        <EntityType Name="borrowlendstock">
-          <Key>
-            <PropertyRef Name="borrowLendStockId" />
-          </Key>
-          <Property Name="borrowLendStockId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="stockId" Type="Int32" Nullable="false" />
-          <Property Name="borrowLendId" Type="Int32" Nullable="false" />
-          <Property Name="quantityBorrowed" Type="Int32" />
-          <Property Name="amount" Type="Double" />
-          <NavigationProperty Name="borrowlend" Relationship="Self.fk_BorrowLendStock_BorrowLend1" FromRole="borrowlendstock" ToRole="borrowlend" />
-          <NavigationProperty Name="stock" Relationship="Self.fk_BorrowLendStock_Stock1" FromRole="borrowlendstock" ToRole="stock" />
-        </EntityType>
         <EntityType Name="category">
           <Key>
             <PropertyRef Name="categoryId" />
@@ -755,6 +890,7 @@
           <NavigationProperty Name="employerstocks" Relationship="Self.fk_EmployerStock_Employee1" FromRole="employee" ToRole="employerstock" />
           <NavigationProperty Name="orders" Relationship="Self.fk_Order_Employee1" FromRole="employee" ToRole="order" />
           <NavigationProperty Name="sales" Relationship="Self.fk_Sales_Employee1" FromRole="employee" ToRole="sales" />
+          <NavigationProperty Name="borrowlends" Relationship="pharmacyModel.fk_BorrowLend_Employee1" FromRole="employee" ToRole="borrowlend" />
         </EntityType>
         <EntityType Name="employerstock">
           <Key>
@@ -779,6 +915,7 @@
           <NavigationProperty Name="orderhistories" Relationship="Self.fk_OrderHistory_Order1" FromRole="order" ToRole="orderhistory" />
           <NavigationProperty Name="orderdetails" Relationship="pharmacyModel.fk_OrderDetail_Order1" FromRole="order" ToRole="orderdetail" />
           <Property Name="orderNumber" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="borroworderlends" Relationship="pharmacyModel.fk_BorrowOrderLend_Order1" FromRole="order" ToRole="borroworderlend" />
         </EntityType>
         <EntityType Name="orderdetail">
           <Key>
@@ -839,6 +976,7 @@
           <NavigationProperty Name="productsupplieds" Relationship="Self.fk_product_suplied_ProductDetails1" FromRole="productdetails" ToRole="productsupplied" />
           <NavigationProperty Name="solditems" Relationship="pharmacyModel.fk_SoldItems_ProductDetails1" FromRole="productdetail" ToRole="solditem" />
           <NavigationProperty Name="stocks" Relationship="pharmacyModel.fk_Stock_ProductDetails1" FromRole="productdetail" ToRole="stock" />
+          <NavigationProperty Name="borrowlendstocks" Relationship="pharmacyModel.fk_BorrowLendStock_ProductDetails1" FromRole="productdetail" ToRole="borrowlendstock" />
         </EntityType>
         <EntityType Name="productsupplied">
           <Key>
@@ -864,6 +1002,7 @@
           <Property Name="salesStatus" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="overallDiscounPercentage" Type="Int32" />
           <Property Name="netAmountAfterOD" Type="Double" />
+          <Property Name="customerName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="solditem">
           <Key>
@@ -888,7 +1027,6 @@
           <Property Name="quantity" Type="Int32" Nullable="false" />
           <Property Name="batchNO" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="expiryDate" Type="DateTime" Nullable="false" />
-          <NavigationProperty Name="borrowlendstocks" Relationship="Self.fk_BorrowLendStock_Stock1" FromRole="stock" ToRole="borrowlendstock" />
           <NavigationProperty Name="employerstocks" Relationship="Self.fk_EmployerStock_Stock1" FromRole="stock" ToRole="employerstock" />
           <NavigationProperty Name="orderdetail" Relationship="Self.fk_Stock_OrderDetails1" FromRole="stock" ToRole="orderdetail" />
           <Property Name="sellingPricePrItem" Type="Double" Nullable="false" />
@@ -897,6 +1035,7 @@
           <NavigationProperty Name="soldstocks" Relationship="pharmacyModel.fk_table1_Stock1" FromRole="stock" ToRole="soldstock" />
           <Property Name="productDetailId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="productdetail" Relationship="pharmacyModel.fk_Stock_ProductDetails1" FromRole="stock" ToRole="productdetail" />
+          <NavigationProperty Name="borrowstocks" Relationship="pharmacyModel.fk_BorrowStock_Stock1" FromRole="stock" ToRole="borrowstock" />
         </EntityType>
         <EntityType Name="supplier">
           <Key>
@@ -920,30 +1059,6 @@
           <Property Name="authorityId" Type="Int16" />
           <NavigationProperty Name="authority" Relationship="pharmacyModel.fk_Users_Authorities1" FromRole="user" ToRole="authority" />
         </EntityType>
-        <Association Name="fk_BorrowLendStock_BorrowLend1">
-          <End Role="borrowlend" Type="Self.borrowlend" Multiplicity="1" />
-          <End Role="borrowlendstock" Type="Self.borrowlendstock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="borrowlend">
-              <PropertyRef Name="borrowLendId" />
-            </Principal>
-            <Dependent Role="borrowlendstock">
-              <PropertyRef Name="borrowLendId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_BorrowLendStock_Stock1">
-          <End Role="stock" Type="Self.stock" Multiplicity="1" />
-          <End Role="borrowlendstock" Type="Self.borrowlendstock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="stock">
-              <PropertyRef Name="stockId" />
-            </Principal>
-            <Dependent Role="borrowlendstock">
-              <PropertyRef Name="stockId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_Product_Category1">
           <End Role="category" Type="Self.category" Multiplicity="1" />
           <End Role="product" Type="Self.product" Multiplicity="*" />
@@ -1150,8 +1265,6 @@
         </Association>
         <EntityContainer Name="pharmacyEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="authorities" EntityType="Self.authority" />
-          <EntitySet Name="borrowlends" EntityType="Self.borrowlend" />
-          <EntitySet Name="borrowlendstocks" EntityType="Self.borrowlendstock" />
           <EntitySet Name="categories" EntityType="Self.category" />
           <EntitySet Name="departments" EntityType="Self.department" />
           <EntitySet Name="designations" EntityType="Self.designation" />
@@ -1169,14 +1282,6 @@
           <EntitySet Name="stocks" EntityType="Self.stock" />
           <EntitySet Name="suppliers" EntityType="Self.supplier" />
           <EntitySet Name="users" EntityType="Self.user" />
-          <AssociationSet Name="fk_BorrowLendStock_BorrowLend1" Association="Self.fk_BorrowLendStock_BorrowLend1">
-            <End Role="borrowlend" EntitySet="borrowlends" />
-            <End Role="borrowlendstock" EntitySet="borrowlendstocks" />
-          </AssociationSet>
-          <AssociationSet Name="fk_BorrowLendStock_Stock1" Association="Self.fk_BorrowLendStock_Stock1">
-            <End Role="stock" EntitySet="stocks" />
-            <End Role="borrowlendstock" EntitySet="borrowlendstocks" />
-          </AssociationSet>
           <AssociationSet Name="fk_Product_Category1" Association="Self.fk_Product_Category1">
             <End Role="category" EntitySet="categories" />
             <End Role="product" EntitySet="products" />
@@ -1274,6 +1379,48 @@
           <AssociationSet Name="fk_Stock_ProductDetails1" Association="pharmacyModel.fk_Stock_ProductDetails1">
             <End Role="productdetail" EntitySet="productdetails" />
             <End Role="stock" EntitySet="stocks" />
+          </AssociationSet>
+          <EntitySet Name="borrowlends" EntityType="pharmacyModel.borrowlend" />
+          <EntitySet Name="borrowlendstocks" EntityType="pharmacyModel.borrowlendstock" />
+          <EntitySet Name="borroworderlends" EntityType="pharmacyModel.borroworderlend" />
+          <EntitySet Name="borrowstocks" EntityType="pharmacyModel.borrowstock" />
+          <EntitySet Name="branches" EntityType="pharmacyModel.branch" />
+          <AssociationSet Name="fk_BorrowLend_Branch1" Association="pharmacyModel.fk_BorrowLend_Branch1">
+            <End Role="branch" EntitySet="branches" />
+            <End Role="borrowlend" EntitySet="borrowlends" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowLendStock_BorrowLend1" Association="pharmacyModel.fk_BorrowLendStock_BorrowLend1">
+            <End Role="borrowlend" EntitySet="borrowlends" />
+            <End Role="borrowlendstock" EntitySet="borrowlendstocks" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowOrderLend_BorrowLend1" Association="pharmacyModel.fk_BorrowOrderLend_BorrowLend1">
+            <End Role="borrowlend" EntitySet="borrowlends" />
+            <End Role="borroworderlend" EntitySet="borroworderlends" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowStock_BorrowLendStock1" Association="pharmacyModel.fk_BorrowStock_BorrowLendStock1">
+            <End Role="borrowlendstock" EntitySet="borrowlendstocks" />
+            <End Role="borrowstock" EntitySet="borrowstocks" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowOrderLend_Order1" Association="pharmacyModel.fk_BorrowOrderLend_Order1">
+            <End Role="order" EntitySet="orders" />
+            <End Role="borroworderlend" EntitySet="borroworderlends" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowStock_Stock1" Association="pharmacyModel.fk_BorrowStock_Stock1">
+            <End Role="stock" EntitySet="stocks" />
+            <End Role="borrowstock" EntitySet="borrowstocks" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowLend_Employee1" Association="pharmacyModel.fk_BorrowLend_Employee1">
+            <End Role="employee" EntitySet="employees" />
+            <End Role="borrowlend" EntitySet="borrowlends" />
+          </AssociationSet>
+          <EntitySet Name="borrowlendstatuses" EntityType="pharmacyModel.borrowlendstatus" />
+          <AssociationSet Name="fk_BorrowLend_BorrowLendStatuses1" Association="pharmacyModel.fk_BorrowLend_BorrowLendStatuses1">
+            <End Role="borrowlendstatus" EntitySet="borrowlendstatuses" />
+            <End Role="borrowlend" EntitySet="borrowlends" />
+          </AssociationSet>
+          <AssociationSet Name="fk_BorrowLendStock_ProductDetails1" Association="pharmacyModel.fk_BorrowLendStock_ProductDetails1">
+            <End Role="productdetail" EntitySet="productdetails" />
+            <End Role="borrowlendstock" EntitySet="borrowlendstocks" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="fk_OrderDetail_Order1">
@@ -1381,6 +1528,185 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="borrowlend">
+          <Key>
+            <PropertyRef Name="borrowLendId" />
+          </Key>
+          <Property Name="borrowLendId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="branchId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="branch" Relationship="pharmacyModel.fk_BorrowLend_Branch1" FromRole="borrowlend" ToRole="branch" />
+          <NavigationProperty Name="borrowlendstocks" Relationship="pharmacyModel.fk_BorrowLendStock_BorrowLend1" FromRole="borrowlend" ToRole="borrowlendstock" />
+          <NavigationProperty Name="borroworderlends" Relationship="pharmacyModel.fk_BorrowOrderLend_BorrowLend1" FromRole="borrowlend" ToRole="borroworderlend" />
+          <Property Name="netAmount" Type="Double" />
+          <Property Name="lendingDate" Type="DateTime" />
+          <Property Name="borrowerName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="empId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="employee" Relationship="pharmacyModel.fk_BorrowLend_Employee1" FromRole="borrowlend" ToRole="employee" />
+          <Property Name="borrowLendStatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="borrowlendstatus" Relationship="pharmacyModel.fk_BorrowLend_BorrowLendStatuses1" FromRole="borrowlend" ToRole="borrowlendstatus" />
+          <Property Name="lendingNumber" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="borrowlendstock">
+          <Key>
+            <PropertyRef Name="borrowLendStockId" />
+          </Key>
+          <Property Name="borrowLendStockId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="borrowLendId" Type="Int32" Nullable="false" />
+          <Property Name="quantityBorrowed" Type="Int32" />
+          <Property Name="amount" Type="Double" />
+          <NavigationProperty Name="borrowlend" Relationship="pharmacyModel.fk_BorrowLendStock_BorrowLend1" FromRole="borrowlendstock" ToRole="borrowlend" />
+          <NavigationProperty Name="borrowstocks" Relationship="pharmacyModel.fk_BorrowStock_BorrowLendStock1" FromRole="borrowlendstock" ToRole="borrowstock" />
+          <Property Name="productDetailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="productdetail" Relationship="pharmacyModel.fk_BorrowLendStock_ProductDetails1" FromRole="borrowlendstock" ToRole="productdetail" />
+        </EntityType>
+        <EntityType Name="borroworderlend">
+          <Key>
+            <PropertyRef Name="BorrowOrderLendId" />
+          </Key>
+          <Property Name="BorrowOrderLendId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="borrowLendId" Type="Int32" Nullable="false" />
+          <Property Name="orderId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="borrowlend" Relationship="pharmacyModel.fk_BorrowOrderLend_BorrowLend1" FromRole="borroworderlend" ToRole="borrowlend" />
+          <NavigationProperty Name="order" Relationship="pharmacyModel.fk_BorrowOrderLend_Order1" FromRole="borroworderlend" ToRole="order" />
+        </EntityType>
+        <EntityType Name="borrowstock">
+          <Key>
+            <PropertyRef Name="borrowStockId" />
+          </Key>
+          <Property Name="borrowStockId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="borrowLendStockId" Type="Int32" Nullable="false" />
+          <Property Name="stockId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="borrowlendstock" Relationship="pharmacyModel.fk_BorrowStock_BorrowLendStock1" FromRole="borrowstock" ToRole="borrowlendstock" />
+          <NavigationProperty Name="stock" Relationship="pharmacyModel.fk_BorrowStock_Stock1" FromRole="borrowstock" ToRole="stock" />
+        </EntityType>
+        <EntityType Name="branch">
+          <Key>
+            <PropertyRef Name="branchId" />
+          </Key>
+          <Property Name="branchId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="branchName" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="branchAdress" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="branchLocation" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="branchContactNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="borrowlends" Relationship="pharmacyModel.fk_BorrowLend_Branch1" FromRole="branch" ToRole="borrowlend" />
+        </EntityType>
+        <Association Name="fk_BorrowLend_Branch1">
+          <End Type="pharmacyModel.branch" Role="branch" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowlend" Role="borrowlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="branch">
+              <PropertyRef Name="branchId" />
+            </Principal>
+            <Dependent Role="borrowlend">
+              <PropertyRef Name="branchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowLendStock_BorrowLend1">
+          <End Type="pharmacyModel.borrowlend" Role="borrowlend" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowlendstock" Role="borrowlendstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlend">
+              <PropertyRef Name="borrowLendId" />
+            </Principal>
+            <Dependent Role="borrowlendstock">
+              <PropertyRef Name="borrowLendId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowOrderLend_BorrowLend1">
+          <End Type="pharmacyModel.borrowlend" Role="borrowlend" Multiplicity="1" />
+          <End Type="pharmacyModel.borroworderlend" Role="borroworderlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlend">
+              <PropertyRef Name="borrowLendId" />
+            </Principal>
+            <Dependent Role="borroworderlend">
+              <PropertyRef Name="borrowLendId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowStock_BorrowLendStock1">
+          <End Type="pharmacyModel.borrowlendstock" Role="borrowlendstock" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowstock" Role="borrowstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlendstock">
+              <PropertyRef Name="borrowLendStockId" />
+            </Principal>
+            <Dependent Role="borrowstock">
+              <PropertyRef Name="borrowLendStockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowOrderLend_Order1">
+          <End Type="pharmacyModel.order" Role="order" Multiplicity="1" />
+          <End Type="pharmacyModel.borroworderlend" Role="borroworderlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="orderId" />
+            </Principal>
+            <Dependent Role="borroworderlend">
+              <PropertyRef Name="orderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowStock_Stock1">
+          <End Type="pharmacyModel.stock" Role="stock" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowstock" Role="borrowstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="stock">
+              <PropertyRef Name="stockId" />
+            </Principal>
+            <Dependent Role="borrowstock">
+              <PropertyRef Name="stockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowLend_Employee1">
+          <End Type="pharmacyModel.employee" Role="employee" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowlend" Role="borrowlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="employee">
+              <PropertyRef Name="empId" />
+            </Principal>
+            <Dependent Role="borrowlend">
+              <PropertyRef Name="empId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="borrowlendstatus">
+          <Key>
+            <PropertyRef Name="borrowLendStatusId" />
+          </Key>
+          <Property Name="borrowLendStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="statusName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="discription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="borrowlends" Relationship="pharmacyModel.fk_BorrowLend_BorrowLendStatuses1" FromRole="borrowlendstatus" ToRole="borrowlend" />
+        </EntityType>
+        <Association Name="fk_BorrowLend_BorrowLendStatuses1">
+          <End Type="pharmacyModel.borrowlendstatus" Role="borrowlendstatus" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowlend" Role="borrowlend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="borrowlendstatus">
+              <PropertyRef Name="borrowLendStatusId" />
+            </Principal>
+            <Dependent Role="borrowlend">
+              <PropertyRef Name="borrowLendStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_BorrowLendStock_ProductDetails1">
+          <End Type="pharmacyModel.productdetail" Role="productdetail" Multiplicity="1" />
+          <End Type="pharmacyModel.borrowlendstock" Role="borrowlendstock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productdetail">
+              <PropertyRef Name="productDetailId" />
+            </Principal>
+            <Dependent Role="borrowlendstock">
+              <PropertyRef Name="productDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1392,26 +1718,6 @@
               <MappingFragment StoreEntitySet="authorities">
                 <ScalarProperty Name="authorityId" ColumnName="authorityId" />
                 <ScalarProperty Name="authority1" ColumnName="authority" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="borrowlends">
-            <EntityTypeMapping TypeName="pharmacyModel.borrowlend">
-              <MappingFragment StoreEntitySet="borrowlend">
-                <ScalarProperty Name="borrowLendId" ColumnName="borrowLendId" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="orderIdAgaintBorrowed" ColumnName="orderIdAgaintBorrowed" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="borrowlendstocks">
-            <EntityTypeMapping TypeName="pharmacyModel.borrowlendstock">
-              <MappingFragment StoreEntitySet="borrowlendstock">
-                <ScalarProperty Name="borrowLendStockId" ColumnName="borrowLendStockId" />
-                <ScalarProperty Name="stockId" ColumnName="stockId" />
-                <ScalarProperty Name="borrowLendId" ColumnName="borrowLendId" />
-                <ScalarProperty Name="quantityBorrowed" ColumnName="quantityBorrowed" />
-                <ScalarProperty Name="amount" ColumnName="amount" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1550,6 +1856,7 @@
           <EntitySetMapping Name="sales">
             <EntityTypeMapping TypeName="pharmacyModel.sale">
               <MappingFragment StoreEntitySet="sales">
+                <ScalarProperty Name="customerName" ColumnName="customerName" />
                 <ScalarProperty Name="netAmountAfterOD" ColumnName="netAmountAfterOD" />
                 <ScalarProperty Name="overallDiscounPercentage" ColumnName="overallDiscounPercentage" />
                 <ScalarProperty Name="salesStatus" ColumnName="salesStatus" />
@@ -1626,6 +1933,69 @@
                 <ScalarProperty Name="soldItemId" ColumnName="soldItemId" />
                 <ScalarProperty Name="stockId" ColumnName="stockId" />
                 <ScalarProperty Name="soldStokId" ColumnName="soldStokId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="borrowlends">
+            <EntityTypeMapping TypeName="pharmacyModel.borrowlend">
+              <MappingFragment StoreEntitySet="borrowlend">
+                <ScalarProperty Name="lendingNumber" ColumnName="lendingNumber" />
+                <ScalarProperty Name="borrowLendStatusId" ColumnName="borrowLendStatusId" />
+                <ScalarProperty Name="empId" ColumnName="empId" />
+                <ScalarProperty Name="borrowerName" ColumnName="borrowerName" />
+                <ScalarProperty Name="lendingDate" ColumnName="lendingDate" />
+                <ScalarProperty Name="netAmount" ColumnName="netAmount" />
+                <ScalarProperty Name="branchId" ColumnName="branchId" />
+                <ScalarProperty Name="borrowLendId" ColumnName="borrowLendId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="borrowlendstocks">
+            <EntityTypeMapping TypeName="pharmacyModel.borrowlendstock">
+              <MappingFragment StoreEntitySet="borrowlendstock">
+                <ScalarProperty Name="productDetailId" ColumnName="productDetailId" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="quantityBorrowed" ColumnName="quantityBorrowed" />
+                <ScalarProperty Name="borrowLendId" ColumnName="borrowLendId" />
+                <ScalarProperty Name="borrowLendStockId" ColumnName="borrowLendStockId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="borroworderlends">
+            <EntityTypeMapping TypeName="pharmacyModel.borroworderlend">
+              <MappingFragment StoreEntitySet="borroworderlend">
+                <ScalarProperty Name="orderId" ColumnName="orderId" />
+                <ScalarProperty Name="borrowLendId" ColumnName="borrowLendId" />
+                <ScalarProperty Name="BorrowOrderLendId" ColumnName="BorrowOrderLendId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="borrowstocks">
+            <EntityTypeMapping TypeName="pharmacyModel.borrowstock">
+              <MappingFragment StoreEntitySet="borrowstock">
+                <ScalarProperty Name="stockId" ColumnName="stockId" />
+                <ScalarProperty Name="borrowLendStockId" ColumnName="borrowLendStockId" />
+                <ScalarProperty Name="borrowStockId" ColumnName="borrowStockId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="branches">
+            <EntityTypeMapping TypeName="pharmacyModel.branch">
+              <MappingFragment StoreEntitySet="branch">
+                <ScalarProperty Name="branchContactNumber" ColumnName="branchContactNumber" />
+                <ScalarProperty Name="branchLocation" ColumnName="branchLocation" />
+                <ScalarProperty Name="branchAdress" ColumnName="branchAdress" />
+                <ScalarProperty Name="branchName" ColumnName="branchName" />
+                <ScalarProperty Name="branchId" ColumnName="branchId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="borrowlendstatuses">
+            <EntityTypeMapping TypeName="pharmacyModel.borrowlendstatus">
+              <MappingFragment StoreEntitySet="borrowlendstatuses">
+                <ScalarProperty Name="discription" ColumnName="discription" />
+                <ScalarProperty Name="statusName" ColumnName="statusName" />
+                <ScalarProperty Name="borrowLendStatusId" ColumnName="borrowLendStatusId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

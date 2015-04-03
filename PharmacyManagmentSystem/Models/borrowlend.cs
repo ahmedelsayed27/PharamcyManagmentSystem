@@ -23,18 +23,38 @@ public partial class borrowlend
 
         this.borrowlendstocks = new HashSet<borrowlendstock>();
 
+        this.borroworderlends = new HashSet<borroworderlend>();
+
     }
 
 
     public int borrowLendId { get; set; }
 
-    public bool Status { get; set; }
+    public int branchId { get; set; }
 
-    public Nullable<int> orderIdAgaintBorrowed { get; set; }
+    public Nullable<double> netAmount { get; set; }
+
+    public Nullable<System.DateTime> lendingDate { get; set; }
+
+    public string borrowerName { get; set; }
+
+    public int empId { get; set; }
+
+    public int borrowLendStatusId { get; set; }
+
+    public string lendingNumber { get; set; }
 
 
+
+    public virtual branch branch { get; set; }
 
     public virtual ICollection<borrowlendstock> borrowlendstocks { get; set; }
+
+    public virtual ICollection<borroworderlend> borroworderlends { get; set; }
+
+    public virtual employee employee { get; set; }
+
+    public virtual borrowlendstatus borrowlendstatus { get; set; }
 
 }
 

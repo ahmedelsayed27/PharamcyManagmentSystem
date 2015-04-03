@@ -85,8 +85,12 @@
                     type: 'POST', url: '@Url.Action("SaveNewOrder")', dataType: 'json', data: { Date: $('#datepicker').val(), OrderNumber: $('#ordernumber').val() },
                     success: function (ok) {
                         location.reload();
-                        document.getElementById("errorlable").innerHTML = "Order Saved";
-                        //$("#OrderGrid2").
+                        if (ok == "ok") {
+                            document.getElementById("errorlable").innerHTML = "Order Saved";
+                        }
+                        else {
+                            document.getElementById("errorlable").innerHTML = "Order not Saved";
+                        }                      
                     },
                     error: function (ex) {
                       document.getElementById("errorlable").innerHTML = "Order Not saved, Try again ";

@@ -21,11 +21,11 @@ public partial class stock
     public stock()
     {
 
-        this.borrowlendstocks = new HashSet<borrowlendstock>();
-
         this.employerstocks = new HashSet<employerstock>();
 
         this.soldstocks = new HashSet<soldstock>();
+
+        this.borrowstocks = new HashSet<borrowstock>();
 
     }
 
@@ -50,8 +50,6 @@ public partial class stock
 
 
 
-    public virtual ICollection<borrowlendstock> borrowlendstocks { get; set; }
-
     public virtual ICollection<employerstock> employerstocks { get; set; }
 
     public virtual orderdetail orderdetail { get; set; }
@@ -59,6 +57,8 @@ public partial class stock
     public virtual ICollection<soldstock> soldstocks { get; set; }
 
     public virtual productdetail productdetail { get; set; }
+
+    public virtual ICollection<borrowstock> borrowstocks { get; set; }
 
 }
 

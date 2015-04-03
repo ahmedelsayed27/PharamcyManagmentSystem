@@ -27,6 +27,8 @@ public partial class productdetail
 
         this.stocks = new HashSet<stock>();
 
+        this.borrowlendstocks = new HashSet<borrowlendstock>();
+
     }
 
 
@@ -45,6 +47,8 @@ public partial class productdetail
     public virtual ICollection<solditem> solditems { get; set; }
 
     public virtual ICollection<stock> stocks { get; set; }
+
+    public virtual ICollection<borrowlendstock> borrowlendstocks { get; set; }
 
 }
 

@@ -129,7 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\LendProducts\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -161,7 +160,19 @@
     <Compile Include="Models\borrowlend.cs">
       <DependentUpon>pharmacy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\borrowlendstatus.cs">
+      <DependentUpon>pharmacy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\borrowlendstock.cs">
+      <DependentUpon>pharmacy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\borroworderlend.cs">
+      <DependentUpon>pharmacy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\borrowstock.cs">
+      <DependentUpon>pharmacy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\branch.cs">
       <DependentUpon>pharmacy.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\category.cs">
@@ -375,6 +386,7 @@
     <Content Include="Views\OrderAndHistory\ReciveOrder.cshtml" />
     <Content Include="Views\OrderAndHistory\EditReciveOrder.cshtml" />
     <Content Include="Views\Sales\Sales.cshtml" />
+    <Content Include="Views\LendProducts\LendProducts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

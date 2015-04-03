@@ -40,6 +40,8 @@ public partial class sale
 
     public Nullable<double> netAmountAfterOD { get; set; }
 
+    public string customerName { get; set; }
+
 
 
     public virtual employee employee { get; set; }

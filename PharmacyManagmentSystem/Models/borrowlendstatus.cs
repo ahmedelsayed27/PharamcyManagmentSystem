@@ -15,34 +15,26 @@ namespace PharmacyManagmentSystem.Models
 using System;
     using System.Collections.Generic;
     
-public partial class borrowlendstock
+public partial class borrowlendstatus
 {
 
-    public borrowlendstock()
+    public borrowlendstatus()
     {
 
-        this.borrowstocks = new HashSet<borrowstock>();
+        this.borrowlends = new HashSet<borrowlend>();
 
     }
 
 
-    public int borrowLendStockId { get; set; }
+    public int borrowLendStatusId { get; set; }
 
-    public int borrowLendId { get; set; }
+    public string statusName { get; set; }
 
-    public Nullable<int> quantityBorrowed { get; set; }
-
-    public Nullable<double> amount { get; set; }
-
-    public int productDetailId { get; set; }
+    public string discription { get; set; }
 
 
 
-    public virtual borrowlend borrowlend { get; set; }
-
-    public virtual ICollection<borrowstock> borrowstocks { get; set; }
-
-    public virtual productdetail productdetail { get; set; }
+    public virtual ICollection<borrowlend> borrowlends { get; set; }
 
 }
 

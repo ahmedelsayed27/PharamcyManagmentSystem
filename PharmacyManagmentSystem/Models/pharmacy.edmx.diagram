@@ -6,8 +6,6 @@
     <edmx:Diagrams>
       <Diagram DiagramId="7f330a549fbd42d6b6a8859dfbd6e316" Name="Diagram1" ZoomLevel="82">
         <EntityTypeShape EntityType="pharmacyModel.authority" Width="1.5" PointX="18.375" PointY="11.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="pharmacyModel.borrowlend" Width="1.5" PointX="10.125" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="pharmacyModel.borrowlendstock" Width="1.5" PointX="13.25" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="pharmacyModel.category" Width="1.5" PointX="1" PointY="10.5" IsExpanded="true" />
         <EntityTypeShape EntityType="pharmacyModel.department" Width="1.5" PointX="21.5" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="pharmacyModel.designation" Width="1.5" PointX="13.625" PointY="12.625" IsExpanded="true" />
@@ -25,8 +23,6 @@
         <EntityTypeShape EntityType="pharmacyModel.stock" Width="1.5" PointX="15.875" PointY="2.625" IsExpanded="true" />
         <EntityTypeShape EntityType="pharmacyModel.supplier" Width="1.5" PointX="10.75" PointY="10.625" IsExpanded="true" />
         <EntityTypeShape EntityType="pharmacyModel.user" Width="1.5" PointX="16.125" PointY="11.625" IsExpanded="true" />
-        <AssociationConnector Association="pharmacyModel.fk_BorrowLendStock_BorrowLend1" ManuallyRouted="false" />
-        <AssociationConnector Association="pharmacyModel.fk_BorrowLendStock_Stock1" ManuallyRouted="false" />
         <AssociationConnector Association="pharmacyModel.fk_Product_Category1" ManuallyRouted="false" />
         <AssociationConnector Association="pharmacyModel.fk_Employee_Department1" ManuallyRouted="false" />
         <AssociationConnector Association="pharmacyModel.fk_Designation_Designation1" ManuallyRouted="false" />
@@ -53,6 +49,21 @@
         <AssociationConnector Association="pharmacyModel.fk_table1_Stock1" />
         <AssociationConnector Association="pharmacyModel.fk_SoldItems_ProductDetails1" />
         <AssociationConnector Association="pharmacyModel.fk_Stock_ProductDetails1" />
+        <EntityTypeShape EntityType="pharmacyModel.borrowlend" Width="2" PointX="12.75" PointY="15.625" />
+        <EntityTypeShape EntityType="pharmacyModel.borrowlendstock" Width="2" PointX="16.5" PointY="16.375" />
+        <EntityTypeShape EntityType="pharmacyModel.borroworderlend" Width="2" PointX="10.25" PointY="13.125" />
+        <EntityTypeShape EntityType="pharmacyModel.borrowstock" Width="2" PointX="19" PointY="14.25" />
+        <EntityTypeShape EntityType="pharmacyModel.branch" Width="2" PointX="9.125" PointY="15.375" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowLend_Branch1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowLendStock_BorrowLend1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowOrderLend_BorrowLend1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowStock_BorrowLendStock1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowOrderLend_Order1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowStock_Stock1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowLend_Employee1" />
+        <EntityTypeShape EntityType="pharmacyModel.borrowlendstatus" Width="2" PointX="12" PointY="20.375" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowLend_BorrowLendStatuses1" />
+        <AssociationConnector Association="pharmacyModel.fk_BorrowLendStock_ProductDetails1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -216,9 +216,18 @@ namespace PharmacyManagmentSystem.Controllers
          DateTime newdate=DateTime.Today;
          if (DateTime.TryParse(Date, out newdate))
          {
-             int id = int.Parse(this.Session["EmpID"].ToString());
-             pdal.AddNewOrder(newdate,id,OrderNumber );
-             return Json("ok");
+            
+                 int id = int.Parse(this.Session["EmpID"].ToString());
+                bool chck= pdal.AddNewOrder(newdate, id, OrderNumber);
+                if (chck == true)
+                {
+                    return Json("ok");
+                }
+                else
+                {
+                    return Json("not ok");
+                }              
+                       
          }
          return Json("not ok");
         }

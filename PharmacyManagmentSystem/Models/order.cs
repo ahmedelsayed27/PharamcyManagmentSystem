@@ -25,6 +25,8 @@ public partial class order
 
         this.orderdetails = new HashSet<orderdetail>();
 
+        this.borroworderlends = new HashSet<borroworderlend>();
+
     }
 
 
@@ -47,6 +49,8 @@ public partial class order
     public virtual ICollection<orderhistory> orderhistories { get; set; }
 
     public virtual ICollection<orderdetail> orderdetails { get; set; }
+
+    public virtual ICollection<borroworderlend> borroworderlends { get; set; }
 
 }
 

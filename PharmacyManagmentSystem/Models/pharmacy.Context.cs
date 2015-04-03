@@ -34,10 +34,6 @@ public partial class pharmacyEntities : DbContext
 
     public DbSet<authority> authorities { get; set; }
 
-    public DbSet<borrowlend> borrowlends { get; set; }
-
-    public DbSet<borrowlendstock> borrowlendstocks { get; set; }
-
     public DbSet<category> categories { get; set; }
 
     public DbSet<department> departments { get; set; }
@@ -75,6 +71,18 @@ public partial class pharmacyEntities : DbContext
     public DbSet<pharmacylog> pharmacylogs { get; set; }
 
     public DbSet<soldstock> soldstocks { get; set; }
+
+    public DbSet<borrowlend> borrowlends { get; set; }
+
+    public DbSet<borrowlendstock> borrowlendstocks { get; set; }
+
+    public DbSet<borroworderlend> borroworderlends { get; set; }
+
+    public DbSet<borrowstock> borrowstocks { get; set; }
+
+    public DbSet<branch> branches { get; set; }
+
+    public DbSet<borrowlendstatus> borrowlendstatuses { get; set; }
 
 }
 

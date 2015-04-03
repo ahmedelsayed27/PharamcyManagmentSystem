@@ -29,6 +29,8 @@ public partial class employee
 
         this.sales = new HashSet<sale>();
 
+        this.borrowlends = new HashSet<borrowlend>();
+
     }
 
 
@@ -77,6 +79,8 @@ public partial class employee
     public virtual ICollection<order> orders { get; set; }
 
     public virtual ICollection<sale> sales { get; set; }
+
+    public virtual ICollection<borrowlend> borrowlends { get; set; }
 
 }
 
