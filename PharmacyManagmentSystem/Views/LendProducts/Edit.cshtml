@@ -1,0 +1,47 @@
+﻿@model PharmacyManagmentSystem.Models.borrowlend
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>borrowlend</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.borrowLendId)
+        @Html.HiddenFor(model => model.netAmount)
+        <div id="createnewLending" style="width:50%; align-content:center;">
+            <table class="table table-condensed" style="width:inherit">
+                <tr style="background-color:#3A597A; color:white;">
+
+                    <td>@Html.Label("Borrower Name")</td>
+                    <td>@Html.Label("Branch Name")</td>
+                    <td>@Html.Label("Lending  Number")</td>
+                    <td>@Html.Label("Date")</td>
+                    <td>@Html.Label("Status")</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>@Html.EditorFor(model => model.borrowerName)</td>
+                    <td>@Html.DropDownList("branchId")</td>
+                    <td>@Html.EditorFor(model => model.lendingNumber)</td>
+                    <td>@Html.EditorFor(model => model.lendingDate)</td>
+                    <td>@Html.DropDownList("borrowLendStatusId" )</td>
+
+                    <td><input type="submit" value="Save" class="btn btn-default" /> </td>
+                </tr>
+            </table>
+            <label id="ErrorLable"> hi</label>
+        </div>      
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to Lend Products Page", "LendProducts")
+</div>

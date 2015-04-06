@@ -1046,9 +1046,9 @@ namespace PharmacyManagmentSystem.DAL
 
         #region borow Lend Part
 
-        public SelectList GetBranches()
+        public SelectList GetBranches(int branchid)
         {
-            return new SelectList(db.branches, "branchId", "branchName");
+            return new SelectList(db.branches, "branchId", "branchName",branchid);
         }
                
         public bool AddLendingRecord(int BranchId ,string borrowerName, string LendingNumber ,DateTime date, int EmpId , int StatusId)
@@ -1085,8 +1085,96 @@ namespace PharmacyManagmentSystem.DAL
             return list;
         }
 
-        
+        public borrowlend GetSingleBorrowLend(int? id)
+        {
+            borrowlend BL = db.borrowlends.Find( id);
+            return BL;
+        }
 
+        public void EditLendDetails(borrowlend Bl)
+        {
+            borrowlend BorrowLend = db.borrowlends.Find(Bl.borrowLendId);
+            BorrowLend.borrowerName=Bl.borrowerName;
+            BorrowLend.borrowLendStatusId=Bl.borrowLendStatusId;
+            BorrowLend.branchId=Bl.branchId;
+            BorrowLend.lendingDate=Bl.lendingDate;
+            BorrowLend.lendingNumber=Bl.lendingNumber;
+            db.SaveChanges();      
+        }
+      
+        public SelectList GetBorrowlendStatuses(int statusId)
+        { 
+        var lendingStatus=db.borrowlendstatuses;
+        SelectList list =new SelectList(lendingStatus,"borrowLendStatusId","statusName",statusId);
+        return list;
+        }
+
+        public List<SalesTableStructure> LendingItems(int? id)
+        {
+            List<SalesTableStructure> list=new List<SalesTableStructure>();
+             SalesTableStructure Item = new SalesTableStructure();
+            var sale = db.borrowlendstocks.Where(s => s.borrowLendId == id).Include(s => s.borrowstocks);
+            foreach (var s in sale)
+            {
+                Item = new SalesTableStructure();
+                var sold = s.borrowstocks.Where(t => t.borrowLendStockId == s.borrowLendStockId);
+                Item.Product = GetProductNameForSoldItem(s.productDetailId);
+                Item.Quantity = s.quantityBorrowed;
+                Item.UnitPrice = s.amount / s.quantityBorrowed;
+                Item.Amount = s.amount;
+                Item.SoldItemId = s.borrowLendStockId;                            
+                list.Add(Item);
+            }
+            return list;
+        }
+        public string   SaveALendingItem(int _quantity, double _amount, int  _Lendid,int  _proDetID)
+        {
+            using (var dbTransaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    borrowlendstock sold = new borrowlendstock();
+                    sold.amount = _amount;
+                    sold.quantityBorrowed = _quantity;
+                    sold.borrowLendId = _Lendid;
+                    sold.productDetailId = _proDetID;
+                    var forsoldItem = db.borrowlendstocks.Add(sold);
+                    db.SaveChanges();
+                    borrowlend LendItem = db.borrowlends.Find(_Lendid);
+                    if (LendItem != null)
+                    {
+                        if (LendItem.netAmount > 0)
+                        {
+                            LendItem.netAmount += _amount;
+                        }
+                        else
+                        {
+                            LendItem.netAmount = _amount;
+                        }
+                    }
+                    db.SaveChanges();
+                    borrowstock newsale = new borrowstock();
+                    List<int> idz = GetStockIdsForProduct(_proDetID , _quantity);
+                    foreach (int id in idz)
+                    {
+                        newsale = new borrowstock();
+                        newsale.borrowLendStockId = forsoldItem.borrowLendStockId;
+                        newsale.stockId = id;
+                        db.borrowstocks.Add(newsale);
+                        db.SaveChanges();
+                    }
+                    dbTransaction.Commit();
+                    return "ok";
+                }
+                catch
+                {
+                    dbTransaction.Rollback();
+                    return "not ok";
+                }
+            }
+           
+        }
+        
         #endregion
         
         protected override void Dispose(bool disposing)

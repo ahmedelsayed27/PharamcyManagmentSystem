@@ -76,7 +76,7 @@ namespace PharmacyManagmentSystem.Controllers
        }
         public ActionResult DeletSalesItem(int id)
        {
-           if (id ==null)
+           if (id == null)
        {
            HttpNotFound();
        }

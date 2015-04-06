@@ -59,8 +59,8 @@
                                  grid.Column("lendingDate", "Date"),
                                  grid.Column("borrowlendstatus.statusName", "Status"),
                                  grid.Column(format: @<a class="btn btn-info" href="~/LendProducts/Edit?id=@item.borrowLendId">Edit Details</a>),
-                                 grid.Column(format: @<a class="btn btn-primary" href="~/LendProducts/AddLendingItems?id=@item.borrowLendId">Edit Items</a>)
-          ), mode: WebGridPagerModes.Numeric)
+                                 grid.Column(format: @<a class="btn btn-primary" href="~/LendProducts/AddLendItems?id=@item.borrowLendId">Edit Items</a>)
+      ), mode: WebGridPagerModes.Numeric)
          </div>
 
  }

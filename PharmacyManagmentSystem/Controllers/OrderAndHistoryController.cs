@@ -204,7 +204,7 @@ namespace PharmacyManagmentSystem.Controllers
                 pdal.ChangeOrderStatus(orderid, newstatusid);
                 return Json("ok");
             }
-            catch (Exception e)
+            catch
             {
                 return Json("not ok");            
             }

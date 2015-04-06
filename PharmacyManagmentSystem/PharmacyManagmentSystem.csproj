@@ -141,6 +141,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LendProductsController.cs" />
     <Compile Include="Controllers\OrderAndHistoryController.cs" />
+    <Compile Include="Controllers\productzzzzzzzController.cs" />
     <Compile Include="Controllers\SalesController.cs" />
     <Compile Include="DAL\NextOrderStatus.cs" />
     <Compile Include="DAL\OrderReciveStructure.cs" />
@@ -387,6 +388,13 @@
     <Content Include="Views\OrderAndHistory\EditReciveOrder.cshtml" />
     <Content Include="Views\Sales\Sales.cshtml" />
     <Content Include="Views\LendProducts\LendProducts.cshtml" />
+    <Content Include="Views\LendProducts\AddLendItems.cshtml" />
+    <Content Include="Views\productzzzzzzz\Create.cshtml" />
+    <Content Include="Views\productzzzzzzz\Delete.cshtml" />
+    <Content Include="Views\productzzzzzzz\Details.cshtml" />
+    <Content Include="Views\productzzzzzzz\Edit.cshtml" />
+    <Content Include="Views\productzzzzzzz\Index.cshtml" />
+    <Content Include="Views\LendProducts\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -395,7 +403,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <PropertyGroup>

@@ -8,25 +8,70 @@ namespace PharmacyManagmentSystem
 {
     public class justlikethat
     {
-        static void StartOwnTransactionWithinContext()
-        {
-            using (var context = new Models.pharmacyEntities())
-            {
-                using (var dbTransaction = context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        
-                    }
-                    catch (Exception)
-                    {
-                        dbTransaction.Rollback();
-                    }
-                }
-            }
-        } 
+        
     }
 }
+
+
+
+
+///edit for borrowlend
+///
+/*
+@{
+    ViewBag.Title = "Edit";
+}
+<h2>Edit Details</h2>
+@using (Html.BeginForm())
+{
+
+<br />
+<div>
+    @Html.Label("user Name =   ")
+    @Html.Label(Session["userName"].ToString())
+    <br />
+    @Html.Label("   Date =   ")
+    @Html.Label(DateTime.Today.Date.ToString())
+   
+    <br />
+</div>
+<br />
+         <div id="createnewLending" style="width:50%; align-content:center;">
+                 <table class="table table-condensed" style="width:inherit">
+                            <tr style="background-color:#3A597A; color:white;">
+                       
+                        <td>@Html.Label("Borrower Name")</td>
+                        <td>@Html.Label("Branch Name")</td>
+                        <td>@Html.Label("Lending  Number")</td>
+                        <td>@Html.Label("Date")</td>
+                        <td>@Html.Label("Status")</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(item => item.borrowerName)</td>
+                        <td>@Html.DisplayFor(item => item.branch.branchName)</td>
+                        <td>@Html.DisplayFor(item => item.lendingNumber)</td>
+                        <td>@Html.DisplayFor(item => item.lendingDate)</td>
+                        <td>@Html.DisplayFor(item => item.borrowlendstatus.statusName)</td>
+                        
+                        <td><button class="btn btn-info" id="saveLending">Save Changes</button> </td>
+                    </tr>
+                </table>
+               <label id="ErrorLable"> hello</label>
+          </div>
+
+
+}*/
+
+
+
+
+
+
+
+
+
+
 
 //selling functionality ( not used are)
 //           using (var dbTransaction = db.Database.BeginTransaction())
